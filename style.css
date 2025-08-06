@@ -1,0 +1,56 @@
+body {
+  font-family: sans-serif;
+  padding: 20px;
+  background: #f9f9f9;
+  color: #333;
+}
+
+.container {
+  max-width: 1200px;
+  margin: auto;
+  background: white;
+  padding: 20px;
+  border-radius: 6px;
+  box-shadow: 0 0 10px #ccc;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.top,
+.checkbox-group,
+.info {
+  margin-bottom: 20px;
+}
+
+label {
+  display: inline-block;
+  margin: 5px 15px 5px 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th, td {
+  border: 1px solid #aaa;
+  padding: 6px;
+  text-align: left;
+  vertical-align: top;
+}
+
+input[type="text"],
+input[type="number"] {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.rodape {
+  margin-top: 20px;
+  font-size: 0.9em;
+  color: #555;
+}
