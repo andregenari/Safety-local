@@ -1,4 +1,272 @@
-<!DOCTYPE html>
+<!<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Safety Huddle Local</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 15px;
+      max-width: 900px;
+      margin: auto;
+      background: #f7f7f7;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .top label {
+      margin-right: 20px;
+      font-weight: bold;
+    }
+    .checkbox-group label {
+      margin-right: 15px;
+      display: inline-block;
+      margin-bottom: 8px;
+    }
+    .info label {
+      display: inline-block;
+      margin-right: 20px;
+      margin-bottom: 10px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: #fff;
+    }
+    th, td {
+      border: 1px solid #bbb;
+      padding: 7px;
+      text-align: left;
+      vertical-align: middle;
+    }
+    th {
+      background-color: #ddd;
+    }
+    input[type="text"], input[type="number"], input[type="date"] {
+      width: 95%;
+      padding: 4px;
+      box-sizing: border-box;
+    }
+    input[type="radio"] {
+      transform: scale(1.2);
+      margin: 0 6px;
+      vertical-align: middle;
+    }
+    .rodape {
+      font-size: 0.85em;
+      margin-top: 20px;
+      color: #444;
+    }
+    #btnSavePdf {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Safety Huddle Local</h2>
+    <div class="top">
+      <label>Data: <input type="date" id="date" /></label>
+      <label>Tempo Gasto: <input type="number" min="0" id="timeSpent" /> min</label>
+    </div>
+
+    <div class="checkbox-group">
+      <strong>Equipe do Huddle:</strong><br />
+      <label><input type="checkbox" id="equipeEnfermeiros" /> Enfermeiros</label>
+      <label><input type="checkbox" id="equipeFisioterapeuta" /> Fisioterapeuta</label>
+      <label><input type="checkbox" id="equipeNutricionistas" /> Nutricionistas</label>
+      <label><input type="checkbox" id="equipeTecnicos" /> Técnicos</label>
+      <label><input type="checkbox" id="equipeAuxiliares" /> Auxiliares</label>
+    </div>
+
+    <div class="info">
+      <label>Número de Leitos Ocupados: <input type="text" id="leitosOcupados" /></label>
+      <label>Previsões de Alta: <input type="text" id="previsoesAlta" /></label>
+      <label>Leitos interditados: <input type="text" id="leitosInterditados" /></label>
+      <label>Contingência/leitos extras: <input type="text" id="contingenciaLeitosExtras" /></label>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 30%">Pergunta</th>
+          <th>Não</th>
+          <th>Sim</th>
+          <th>Quais?</th>
+          <th>Devolutiva do caso para a equipe</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1. Paciente com gerenciamento de risco (farol vermelho ou amarelo)?</td>
+          <td><input type="radio" name="q1" value="não" /></td>
+          <td><input type="radio" name="q1" value="sim" /></td>
+          <td><input type="text" id="q1_quais" /></td>
+          <td><input type="text" id="q1_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>2. Paciente watcher (seriamente preocupado, críticos ou instáveis)?</td>
+          <td><input type="radio" name="q2" value="não" /></td>
+          <td><input type="radio" name="q2" value="sim" /></td>
+          <td><input type="text" id="q2_quais" /></td>
+          <td><input type="text" id="q2_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>3. Paciente com alto risco de queda, resistente à orientações e não aderente às medidas preventivas ou sem acompanhante? Polifarmácia? Farmacêutico ciente?</td>
+          <td><input type="radio" name="q3" value="não" /></td>
+          <td><input type="radio" name="q3" value="sim" /></td>
+          <td><input type="text" id="q3_quais" /></td>
+          <td><input type="text" id="q3_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>4. Pacientes com alto risco de LP? Resistente às medidas preventivas?</td>
+          <td><input type="radio" name="q4" value="não" /></td>
+          <td><input type="radio" name="q4" value="sim" /></td>
+          <td><input type="text" id="q4_quais" /></td>
+          <td><input type="text" id="q4_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>5. Divergências entre o plano terapêutico?</td>
+          <td><input type="radio" name="q5" value="não" /></td>
+          <td><input type="radio" name="q5" value="sim" /></td>
+          <td><input type="text" id="q5_quais" /></td>
+          <td><input type="text" id="q5_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>6. Terapias, procedimentos, protocolos ou dispositivos de alto risco ou não habituais? (LP3 ou acima, Flebite grau 3 ou acima, erro de medicações, Quedas, ICS)</td>
+          <td><input type="radio" name="q6" value="não" /></td>
+          <td><input type="radio" name="q6" value="sim" /></td>
+          <td><input type="text" id="q6_quais" /></td>
+          <td><input type="text" id="q6_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>7. Houve a ocorrência de procedimentos invasivos não planejados ou situações de emergências?</td>
+          <td><input type="radio" name="q7" value="não" /></td>
+          <td><input type="radio" name="q7" value="sim" /></td>
+          <td><input type="text" id="q7_quais" /></td>
+          <td><input type="text" id="q7_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>8. Eventos Adversos?</td>
+          <td><input type="radio" name="q8" value="não" /></td>
+          <td><input type="radio" name="q8" value="sim" /></td>
+          <td><input type="text" id="q8_quais" /></td>
+          <td><input type="text" id="q8_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>9. Problemas com infraestrutura, Cerner, equipamentos, materiais ou medicamentos?</td>
+          <td><input type="radio" name="q9" value="não" /></td>
+          <td><input type="radio" name="q9" value="sim" /></td>
+          <td><input type="text" id="q9_quais" /></td>
+          <td><input type="text" id="q9_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>10. Algum paciente elegível para a visita multiprofissional ou discussão do time diagnóstico?</td>
+          <td><input type="radio" name="q10" value="não" /></td>
+          <td><input type="radio" name="q10" value="sim" /></td>
+          <td><input type="text" id="q10_quais" /></td>
+          <td><input type="text" id="q10_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>11. Outros:</td>
+          <td><input type="radio" name="q11" value="não" /></td>
+          <td><input type="radio" name="q11" value="sim" /></td>
+          <td><input type="text" id="q11_quais" /></td>
+          <td><input type="text" id="q11_devolutiva" /></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="rodape">
+      *Fluxo de Escalonamento: Horário comercial comunicar sênior e Coordenador. Período noturno comunicar sênior e/ou supervisor administrativo. Nos finais de semana comunicar coordenador da área, não conseguindo contato acionar direto supervisor administrativo.
+    </p>
+
+    <button id="btnSavePdf">Gerar PDF</button>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+  <!-- jsPDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script>
+    // Config Firebase - Substitua pelas suas configs do projeto
+    const firebaseConfig = {
+      apiKey: "SUA_API_KEY",
+      authDomain: "SEU_AUTH_DOMAIN",
+      databaseURL: "SUA_DATABASE_URL",
+      projectId: "SEU_PROJECT_ID",
+      storageBucket: "SEU_STORAGE_BUCKET",
+      messagingSenderId: "SEU_MESSAGING_SENDER_ID",
+      appId: "SEU_APP_ID"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const storagePath = "safety-huddle";
+
+    // Função para salvar dados no Firebase
+    function salvarDados() {
+      const data = document.getElementById("date").value || "";
+      const tempo = document.getElementById("timeSpent").value || "";
+
+      const equipe = {
+        enfermeiros: document.getElementById("equipeEnfermeiros").checked,
+        fisioterapeuta: document.getElementById("equipeFisioterapeuta").checked,
+        nutricionistas: document.getElementById("equipeNutricionistas").checked,
+        tecnicos: document.getElementById("equipeTecnicos").checked,
+        auxiliares: document.getElementById("equipeAuxiliares").checked,
+      };
+
+      const info = {
+        leitosOcupados: document.getElementById("leitosOcupados").value || "",
+        previsoesAlta: document.getElementById("previsoesAlta").value || "",
+        leitosInterditados: document.getElementById("leitosInterditados").value || "",
+        contingenciaLeitosExtras: document.getElementById("contingenciaLeitosExtras").value || "",
+      };
+
+      // Coletar respostas das perguntas
+      const perguntas = {};
+      for(let i=1; i<=11; i++) {
+        const radios = document.getElementsByName("q"+i);
+        let resposta = "";
+        radios.forEach(radio => {
+          if(radio.checked) resposta = radio.value;
+        });
+        perguntas["q"+i] = {
+          resposta: resposta,
+          quais: document.getElementById("q"+i+"_quais").value || "",
+          devolutiva: document.getElementById("q"+i+"_devolutiva").value || ""
+        };
+      }
+
+      const dados = {
+        data,
+        tempo,
+        equipe,
+        info,
+        perguntas
+      };
+
+      db.ref(storagePath).set(dados);
+    }
+
+    // Função para carregar dados do Firebase e preencher o formulário
+    function carregarDados() {
+      db.ref(storagePath).once('value').then(snapshot => {
+        const dados = snapshot.val();
+        if (!dados) return;
+
+        document.getElementById("date").value = dados.data || "";
+        document.getElementById("timeSpentDOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
