@@ -6,84 +6,131 @@
 <title>Safety Huddle Local</title>
 <style>
   body { font-family: Arial, sans-serif; margin: 20px; }
-  .container { max-width: 900px; margin: auto; }
   table { border-collapse: collapse; width: 100%; margin-top: 20px; }
-  th, td { border: 1px solid #ddd; padding: 8px; vertical-align: top; }
-  th { background: #f2f2f2; }
-  label { display: inline-block; margin: 5px 10px 10px 0; }
-  input[type="text"], input[type="number"], input[type="date"], input[type="time"] {
-    width: 150px;
-  }
-  .checkbox-group label { margin-right: 15px; }
-  .rodape { margin-top: 30px; font-size: 0.85em; color: #555; }
-  #btnPdf { margin-left: 15px; padding: 6px 12px; }
+  th, td { border: 1px solid #ccc; padding: 6px; vertical-align: top; }
+  th { background: #eee; }
+  label { margin-right: 10px; }
 </style>
 </head>
 <body>
-<div class="container" id="form-container">
-  <h2>Safety Huddle Local</h2>
-  <div class="top">
-    <label>Data: <input type="date" id="data" /></label>
-    <label>Hora: <input type="time" id="hora" /></label>
-    <label>Tempo Gasto Minutos: <input type="number" id="tempo" min="0" /></label>
-    <button id="btnPdf">Salvar PDF</button>
-  </div>
 
-  <div class="checkbox-group">
-    <strong>Equipe do Huddle:</strong><br />
-    <label><input type="checkbox" id="enfermeiros" /> Enfermeiros</label>
-    <label><input type="checkbox" id="fisioterapeuta" /> Fisioterapeuta</label>
-    <label><input type="checkbox" id="nutricionistas" /> Nutricionistas</label>
-    <label><input type="checkbox" id="tecnicos" /> Técnicos</label>
-    <label><input type="checkbox" id="auxiliares" /> Auxiliares</label>
-  </div>
+<h2>Safety Huddle Local</h2>
 
-  <div class="info">
-    <label>Número de Leitos Ocupados: <input type="text" id="leitos" /></label>
-    <label>Previsões de Alta: <input type="text" id="previsoes" /></label>
-    <label>Leitos interditados: <input type="text" id="interditados" /></label>
-  </div>
+<label>Data: <input type="date" id="data" /></label>
+<label>Hora: <input type="time" id="hora" /></label>
+<label>Tempo Gasto (min): <input type="number" id="tempo" min="0" /></label>
 
-  <table>
-    <thead>
-      <tr>
-        <th style="width: 30%">Pergunta</th>
-        <th>Não</th>
-        <th>Sim</th>
-        <th>Quais?</th>
-        <th>Devolutiva do caso para a equipe</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- Perguntas de 1 a 11 -->
-      ${[...Array(11).keys()].map(i => {
-        const n = i+1;
-        return `
-        <tr>
-          <td>${n}. Pergunta ${n}?</td>
-          <td><input type="radio" name="q${n}" value="nao" /></td>
-          <td><input type="radio" name="q${n}" value="sim" /></td>
-          <td><input type="text" id="q${n}_quais" /></td>
-          <td><input type="text" id="q${n}_devolutiva" /></td>
-        </tr>
-        `;
-      }).join('')}
-    </tbody>
-  </table>
+<br /><br />
+Equipe do Huddle:<br />
+<label><input type="checkbox" id="enfermeiros" /> Enfermeiros</label>
+<label><input type="checkbox" id="fisioterapeuta" /> Fisioterapeuta</label>
+<label><input type="checkbox" id="nutricionistas" /> Nutricionistas</label>
+<label><input type="checkbox" id="tecnicos" /> Técnicos</label>
+<label><input type="checkbox" id="auxiliares" /> Auxiliares</label>
 
-  <p class="rodape">
-    *Fluxo de Escalonamento: Horário comercial comunicar sênior e Coordenador. Período noturno comunicar sênior e/ou supervisor administrativo. Nos finais de semana comunicar coordenador da área, não conseguindo contato acionar direto supervisor administrativo.
-  </p>
-</div>
+<br /><br />
+<label>Leitos Ocupados: <input type="text" id="leitos" /></label>
+<label>Previsões de Alta: <input type="text" id="previsoes" /></label>
+<label>Leitos Interditados: <input type="text" id="interditados" /></label>
 
-<!-- Firebase -->
+<table>
+  <thead>
+    <tr>
+      <th>Pergunta</th>
+      <th>Não</th>
+      <th>Sim</th>
+      <th>Quais?</th>
+      <th>Devolutiva para a equipe</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- 11 perguntas -->
+    <tr>
+      <td>1. Pergunta 1?</td>
+      <td><input type="radio" name="q1" value="nao" /></td>
+      <td><input type="radio" name="q1" value="sim" /></td>
+      <td><input type="text" id="q1_quais" /></td>
+      <td><input type="text" id="q1_devolutiva" /></td>
+    </tr>
+    <tr>
+      <td>2. Pergunta 2?</td>
+      <td><input type="radio" name="q2" value="nao" /></td>
+      <td><input type="radio" name="q2" value="sim" /></td>
+      <td><input type="text" id="q2_quais" /></td>
+      <td><input type="text" id="q2_devolutiva" /></td>
+    </tr>
+    <tr>
+      <td>3. Pergunta 3?</td>
+      <td><input type="radio" name="q3" value="nao" /></td>
+      <td><input type="radio" name="q3" value="sim" /></td>
+      <td><input type="text" id="q3_quais" /></td>
+      <td><input type="text" id="q3_devolutiva" /></td>
+    </tr>
+    <tr>
+      <td>4. Pergunta 4?</td>
+      <td><input type="radio" name="q4" value="nao" /></td>
+      <td><input type="radio" name="q4" value="sim" /></td>
+      <td><input type="text" id="q4_quais" /></td>
+      <td><input type="text" id="q4_devolutiva" /></td>
+    </tr>
+    <tr>
+      <td>5. Pergunta 5?</td>
+      <td><input type="radio" name="q5" value="nao" /></td>
+      <td><input type="radio" name="q5" value="sim" /></td>
+      <td><input type="text" id="q5_quais" /></td>
+      <td><input type="text" id="q5_devolutiva" /></td>
+    </tr>
+    <tr>
+      <td>6. Pergunta 6?</td>
+      <td><input type="radio" name="q6" value="nao" /></td>
+      <td><input type="radio" name="q6" value="sim" /></td>
+      <td><input type="text" id="q6_quais" /></td>
+      <td><input type="text" id="q6_devolutiva" /></td>
+    </tr>
+    <tr>
+      <td>7. Pergunta 7?</td>
+      <td><input type="radio" name="q7" value="nao" /></td>
+      <td><input type="radio" name="q7" value="sim" /></td>
+      <td><input type="text" id="q7_quais" /></td>
+      <td><input type="text" id="q7_devolutiva" /></td>
+    </tr>
+    <tr>
+      <td>8. Pergunta 8?</td>
+      <td><input type="radio" name="q8" value="nao" /></td>
+      <td><input type="radio" name="q8" value="sim" /></td>
+      <td><input type="text" id="q8_quais" /></td>
+      <td><input type="text" id="q8_devolutiva" /></td>
+    </tr>
+    <tr>
+      <td>9. Pergunta 9?</td>
+      <td><input type="radio" name="q9" value="nao" /></td>
+      <td><input type="radio" name="q9" value="sim" /></td>
+      <td><input type="text" id="q9_quais" /></td>
+      <td><input type="text" id="q9_devolutiva" /></td>
+    </tr>
+    <tr>
+      <td>10. Pergunta 10?</td>
+      <td><input type="radio" name="q10" value="nao" /></td>
+      <td><input type="radio" name="q10" value="sim" /></td>
+      <td><input type="text" id="q10_quais" /></td>
+      <td><input type="text" id="q10_devolutiva" /></td>
+    </tr>
+    <tr>
+      <td>11. Pergunta 11?</td>
+      <td><input type="radio" name="q11" value="nao" /></td>
+      <td><input type="radio" name="q11" value="sim" /></td>
+      <td><input type="text" id="q11_quais" /></td>
+      <td><input type="text" id="q11_devolutiva" /></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-<!-- jsPDF -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
-  // Configuração do Firebase - use as suas chaves aqui
+  // Config Firebase (use o seu mesmo)
   const firebaseConfig = {
     apiKey: "AIzaSyBLmbarQp31Sqs0_VsYdE-OWdUlYO4WT7M",
     authDomain: "safety-leste.firebaseapp.com",
@@ -95,16 +142,15 @@
     measurementId: "G-G59DD5DB64"
   };
 
-  // Inicializa Firebase
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
-
-  // Referência no DB
   const ref = db.ref('safety-huddle');
 
-  // IDs de inputs para carregar/salvar
+  // Lista todos os campos que salvamos
   const camposSimples = ['data','hora','tempo','leitos','previsoes','interditados'];
   const checkboxes = ['enfermeiros','fisioterapeuta','nutricionistas','tecnicos','auxiliares'];
+
+  // Perguntas
   const perguntas = [];
   for(let i=1; i<=11; i++){
     perguntas.push(`q${i}`);
@@ -112,38 +158,35 @@
     perguntas.push(`q${i}_devolutiva`);
   }
 
-  // Função para salvar campo simples (input text, number, date, time)
-  function salvarCampoSimples(id, valor) {
+  // Função que salva campo simples
+  function salvarCampo(id, valor){
     ref.child(id).set(valor);
   }
-  // Função para salvar checkbox
-  function salvarCheckbox(id, valor) {
-    ref.child(id).set(valor);
+  // Função que salva checkbox
+  function salvarCheckbox(id, checked){
+    ref.child(id).set(checked);
   }
-  // Função para salvar radio button (pergunta)
-  function salvarRadio(nome, valor) {
-    ref.child(nome).set(valor);
+  // Função que salva radio
+  function salvarRadio(name, valor){
+    ref.child(name).set(valor);
   }
 
-  // Atualiza os inputs a partir do DB
-  function atualizarCampos(data) {
+  // Pega valor salvo no DB e preenche inputs
+  function preencherCampos(data){
     if(!data) return;
 
-    // Campos simples
     camposSimples.forEach(id => {
       if(data[id] !== undefined) {
         document.getElementById(id).value = data[id];
       }
     });
 
-    // Checkboxes
     checkboxes.forEach(id => {
       if(data[id] !== undefined) {
         document.getElementById(id).checked = data[id];
       }
     });
 
-    // Perguntas
     for(let i=1; i<=11; i++) {
       if(data[`q${i}`] !== undefined) {
         const radios = document.getElementsByName(`q${i}`);
@@ -160,16 +203,11 @@
     }
   }
 
-  // Escuta mudanças no DB e atualiza a página em tempo real
-  ref.on('value', snapshot => {
-    atualizarCampos(snapshot.val());
-  });
-
-  // Configura eventos para salvar dados ao alterar cada campo
+  // Ao mudar qualquer campo, salvar no Firebase
   // Campos simples
   camposSimples.forEach(id => {
     const el = document.getElementById(id);
-    el.addEventListener('input', e => salvarCampoSimples(id, e.target.value));
+    el.addEventListener('input', e => salvarCampo(id, e.target.value));
   });
 
   // Checkboxes
@@ -178,7 +216,7 @@
     el.addEventListener('change', e => salvarCheckbox(id, e.target.checked));
   });
 
-  // Radios (perguntas)
+  // Radios perguntas
   for(let i=1; i<=11; i++) {
     const radios = document.getElementsByName(`q${i}`);
     radios.forEach(radio => {
@@ -190,4 +228,21 @@
     });
   }
 
-  // Textos "quais"
+  // Campos textos "quais" e "devolutiva"
+  for(let i=1; i<=11; i++) {
+    document.getElementById(`q${i}_quais`).addEventListener('input', e => {
+      salvarCampo(`q${i}_quais`, e.target.value);
+    });
+    document.getElementById(`q${i}_devolutiva`).addEventListener('input', e => {
+      salvarCampo(`q${i}_devolutiva`, e.target.value);
+    });
+  }
+
+  // Escuta alterações no Firebase e atualiza página
+  ref.on('value', snapshot => {
+    preencherCampos(snapshot.val());
+  });
+</script>
+
+</body>
+</html>
