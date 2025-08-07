@@ -71,4 +71,77 @@ document.getElementById("btnSavePdf").onclick = () => {
   }
 
   doc.save("Safety_Huddle_Local.pdf");
+};document.getElementById("btnSavePdf").onclick = () => {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF('p', 'pt', 'a4');
+  const margin = 40;
+  const startY = 60;
+  const lineHeight = 20;
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const colWidths = [pageWidth * 0.4, 40, 40, pageWidth * 0.25, pageWidth * 0.25];
+  
+  doc.setFontSize(14);
+  doc.text("Safety Huddle Local", pageWidth / 2, 30, { align: "center" });
+
+  // Cabeçalho da tabela
+  const headers = ["Pergunta", "Não", "Sim", "Quais?", "Devolutiva do caso para a equipe"];
+
+  // Pegar as linhas da tabela do body
+  const rows = [];
+  const tbody = document.querySelector("table tbody");
+  for (const tr of tbody.querySelectorAll("tr")) {
+    const cells = tr.querySelectorAll("td");
+    const pergunta = cells[0].innerText.trim();
+
+    // Marcar as colunas Não e Sim com ✓ conforme radio selecionado
+    const radiosNao = cells[1].querySelector("input[type=radio]");
+    const radiosSim = cells[2].querySelector("input[type=radio]");
+    let naoChecked = radiosNao.checked ? "✓" : "";
+    let simChecked = radiosSim.checked ? "✓" : "";
+
+    // Inputs texto das colunas Quais? e Devolutiva
+    const quais = cells[3].querySelector("input").value.trim();
+    const devolutiva = cells[4].querySelector("input").value.trim();
+
+    rows.push([pergunta, naoChecked, simChecked, quais, devolutiva]);
+  }
+
+  // Desenhar a tabela no PDF
+  let currentY = startY;
+
+  // Desenha cabeçalho
+  doc.setFont(undefined, 'bold');
+  let x = margin;
+  for(let i=0; i<headers.length; i++) {
+    doc.text(headers[i], x + 2, currentY);
+    x += colWidths[i];
+  }
+  currentY += lineHeight;
+  doc.setFont(undefined, 'normal');
+
+  // Desenha as linhas
+  for (const row of rows) {
+    x = margin;
+    for (let i=0; i<row.length; i++) {
+      let text = row[i];
+      // Para colunas Não e Sim (índices 1 e 2) centraliza o ✓
+      if(i === 1 || i === 2) {
+        doc.text(text, x + colWidths[i]/2, currentY, { align: "center" });
+      } else {
+        // Para texto normal, ajusta quebra se necessário
+        const maxWidth = colWidths[i] - 4;
+        const splitted = doc.splitTextToSize(text, maxWidth);
+        doc.text(splitted, x + 2, currentY);
+      }
+      x += colWidths[i];
+    }
+    currentY += lineHeight;
+    // Verifica quebra de página
+    if (currentY > doc.internal.pageSize.getHeight() - margin) {
+      doc.addPage();
+      currentY = margin;
+    }
+  }
+
+  doc.save("Safety_Huddle_Local.pdf");
 };
