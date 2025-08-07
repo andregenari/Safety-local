@@ -5,242 +5,201 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Safety Huddle Local</title>
 <style>
-  body { font-family: Arial, sans-serif; margin: 20px; }
-  table { border-collapse: collapse; width: 100%; margin-top: 20px; }
-  th, td { border: 1px solid #ccc; padding: 6px; vertical-align: top; }
-  th { background: #eee; }
-  label { margin-right: 10px; }
+  body { font-family: Arial; margin: 20px; background: #f7f7f7; }
+  .container { max-width: 900px; margin: auto; background: #fff; padding: 20px; border-radius: 5px; }
+  h2 { text-align: center; }
+  table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+  th, td { border: 1px solid #ccc; padding: 8px; font-size: 14px; }
+  th { background: #4a90e2; color: white; }
+  input[type="text"], input[type="date"], input[type="number"] { width: 100%; box-sizing: border-box; padding: 5px; }
+  button { background: #4a90e2; color: white; border: none; padding: 10px 15px; cursor: pointer; border-radius: 4px; margin-top: 15px; }
+  button:hover { background: #357ABD; }
 </style>
+<!-- jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
+<div class="container" id="formContainer">
+  <h2>Safety Huddle Local</h2>
+  
+  <label>Data: <input type="date" id="inputDate" /></label>
+  <label>Tempo Gasto (min): <input type="number" min="0" id="inputTime" /></label>
 
-<h2>Safety Huddle Local</h2>
+  <div>
+    <strong>Equipe do Huddle:</strong><br/>
+    <label><input type="checkbox" class="team-member" value="Enfermeiros">Enfermeiros</label>
+    <label><input type="checkbox" class="team-member" value="Fisioterapeuta">Fisioterapeuta</label>
+    <label><input type="checkbox" class="team-member" value="Nutricionistas">Nutricionistas</label>
+    <label><input type="checkbox" class="team-member" value="Técnicos">Técnicos</label>
+    <label><input type="checkbox" class="team-member" value="Auxiliares">Auxiliares</label>
+  </div>
 
-<label>Data: <input type="date" id="data" /></label>
-<label>Hora: <input type="time" id="hora" /></label>
-<label>Tempo Gasto (min): <input type="number" id="tempo" min="0" /></label>
+  <label>Número de Leitos Ocupados: <input type="text" id="bedsOccupied" /></label>
+  <label>Previsões de Alta: <input type="text" id="forecastDischarge" /></label>
+  <label>Leitos interditados: <input type="text" id="blockedBeds" /></label>
+  <label>Contingência/leitos extras: <input type="text" id="extraBeds" /></label>
 
-<br /><br />
-Equipe do Huddle:<br />
-<label><input type="checkbox" id="enfermeiros" /> Enfermeiros</label>
-<label><input type="checkbox" id="fisioterapeuta" /> Fisioterapeuta</label>
-<label><input type="checkbox" id="nutricionistas" /> Nutricionistas</label>
-<label><input type="checkbox" id="tecnicos" /> Técnicos</label>
-<label><input type="checkbox" id="auxiliares" /> Auxiliares</label>
-
-<br /><br />
-<label>Leitos Ocupados: <input type="text" id="leitos" /></label>
-<label>Previsões de Alta: <input type="text" id="previsoes" /></label>
-<label>Leitos Interditados: <input type="text" id="interditados" /></label>
-
-<table>
-  <thead>
-    <tr>
-      <th>Pergunta</th>
-      <th>Não</th>
-      <th>Sim</th>
-      <th>Quais?</th>
-      <th>Devolutiva para a equipe</th>
-    </tr>
-  </thead>
-  <tbody>
-    <!-- 11 perguntas -->
-    <tr>
-      <td>1. Pergunta 1?</td>
-      <td><input type="radio" name="q1" value="nao" /></td>
-      <td><input type="radio" name="q1" value="sim" /></td>
-      <td><input type="text" id="q1_quais" /></td>
-      <td><input type="text" id="q1_devolutiva" /></td>
-    </tr>
-    <tr>
-      <td>2. Pergunta 2?</td>
-      <td><input type="radio" name="q2" value="nao" /></td>
-      <td><input type="radio" name="q2" value="sim" /></td>
-      <td><input type="text" id="q2_quais" /></td>
-      <td><input type="text" id="q2_devolutiva" /></td>
-    </tr>
-    <tr>
-      <td>3. Pergunta 3?</td>
-      <td><input type="radio" name="q3" value="nao" /></td>
-      <td><input type="radio" name="q3" value="sim" /></td>
-      <td><input type="text" id="q3_quais" /></td>
-      <td><input type="text" id="q3_devolutiva" /></td>
-    </tr>
-    <tr>
-      <td>4. Pergunta 4?</td>
-      <td><input type="radio" name="q4" value="nao" /></td>
-      <td><input type="radio" name="q4" value="sim" /></td>
-      <td><input type="text" id="q4_quais" /></td>
-      <td><input type="text" id="q4_devolutiva" /></td>
-    </tr>
-    <tr>
-      <td>5. Pergunta 5?</td>
-      <td><input type="radio" name="q5" value="nao" /></td>
-      <td><input type="radio" name="q5" value="sim" /></td>
-      <td><input type="text" id="q5_quais" /></td>
-      <td><input type="text" id="q5_devolutiva" /></td>
-    </tr>
-    <tr>
-      <td>6. Pergunta 6?</td>
-      <td><input type="radio" name="q6" value="nao" /></td>
-      <td><input type="radio" name="q6" value="sim" /></td>
-      <td><input type="text" id="q6_quais" /></td>
-      <td><input type="text" id="q6_devolutiva" /></td>
-    </tr>
-    <tr>
-      <td>7. Pergunta 7?</td>
-      <td><input type="radio" name="q7" value="nao" /></td>
-      <td><input type="radio" name="q7" value="sim" /></td>
-      <td><input type="text" id="q7_quais" /></td>
-      <td><input type="text" id="q7_devolutiva" /></td>
-    </tr>
-    <tr>
-      <td>8. Pergunta 8?</td>
-      <td><input type="radio" name="q8" value="nao" /></td>
-      <td><input type="radio" name="q8" value="sim" /></td>
-      <td><input type="text" id="q8_quais" /></td>
-      <td><input type="text" id="q8_devolutiva" /></td>
-    </tr>
-    <tr>
-      <td>9. Pergunta 9?</td>
-      <td><input type="radio" name="q9" value="nao" /></td>
-      <td><input type="radio" name="q9" value="sim" /></td>
-      <td><input type="text" id="q9_quais" /></td>
-      <td><input type="text" id="q9_devolutiva" /></td>
-    </tr>
-    <tr>
-      <td>10. Pergunta 10?</td>
-      <td><input type="radio" name="q10" value="nao" /></td>
-      <td><input type="radio" name="q10" value="sim" /></td>
-      <td><input type="text" id="q10_quais" /></td>
-      <td><input type="text" id="q10_devolutiva" /></td>
-    </tr>
-    <tr>
-      <td>11. Pergunta 11?</td>
-      <td><input type="radio" name="q11" value="nao" /></td>
-      <td><input type="radio" name="q11" value="sim" /></td>
-      <td><input type="text" id="q11_quais" /></td>
-      <td><input type="text" id="q11_devolutiva" /></td>
-    </tr>
-  </tbody>
-</table>
-
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <table>
+    <thead>
+      <tr>
+        <th>Pergunta</th>
+        <th>Não</th>
+        <th>Sim</th>
+        <th>Quais?</th>
+        <th>Devolutiva</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1. Paciente com gerenciamento de risco (farol amarelo ou vermelho)?</td>
+        <td><input type="radio" name="q1" value="Não"></td>
+        <td><input type="radio" name="q1" value="Sim"></td>
+        <td><input type="text" name="q1_quais"></td>
+        <td><input type="text" name="q1_devolutiva"></td>
+      </tr>
+      <tr>
+        <td>2. Paciente “Whatcher” (seriamente preocupado, críticos ou instáveis?)</td>
+        <td><input type="radio" name="q2" value="Não"></td>
+        <td><input type="radio" name="q2" value="Sim"></td>
+        <td><input type="text" name="q2_quais"></td>
+        <td><input type="text" name="q2_devolutiva"></td>
+      </tr>
+      <tr>
+        <td>3. Pacientes com alto risco de queda, resistentes às orientações e não aderente às medidas preventivas ou sem acompanhante?</td>
+        <td><input type="radio" name="q3" value="Não"></td>
+        <td><input type="radio" name="q3" value="Sim"></td>
+        <td><input type="text" name="q3_quais"></td>
+        <td><input type="text" name="q3_devolutiva"></td>
+      </tr>
+      <tr>
+        <td>4. Pacientes com alto risco LP? Resistente às medidas preventivas?</td>
+        <td><input type="radio" name="q4" value="Não"></td>
+        <td><input type="radio" name="q4" value="Sim"></td>
+        <td><input type="text" name="q4_quais"></td>
+        <td><input type="text" name="q4_devolutiva"></td>
+      </tr>
+      <tr>
+        <td>5. Divergências entre o plano terapêutico?</td>
+        <td><input type="radio" name="q5" value="Não"></td>
+        <td><input type="radio" name="q5" value="Sim"></td>
+        <td><input type="text" name="q5_quais"></td>
+        <td><input type="text" name="q5_devolutiva"></td>
+      </tr>
+      <tr>
+        <td>6. Terapias, procedimentos, protocolos ou dispositivos de alto risco ou não habituais?</td>
+        <td><input type="radio" name="q6" value="Não"></td>
+        <td><input type="radio" name="q6" value="Sim"></td>
+        <td><input type="text" name="q6_quais"></td>
+        <td><input type="text" name="q6_devolutiva"></td>
+      </tr>
+      <tr>
+        <td>7. Houve a ocorrência de procedimentos invasivos não planejados ou situações de emergências?</td>
+        <td><input type="radio" name="q7" value="Não"></td>
+        <td><input type="radio" name="q7" value="Sim"></td>
+        <td><input type="text" name="q7_quais"></td>
+        <td><input type="text" name="q7_devolutiva"></td>
+      </tr>
+      <tr>
+        <td>8. Eventos Adversos?</td>
+        <td><input type="radio" name="q8" value="Não"></td>
+        <td><input type="radio" name="q8" value="Sim"></td>
+        <td><input type="text" name="q8_quais"></td>
+        <td><input type="text" name="q8_devolutiva"></td>
+      </tr>
+      <tr>
+        <td>9. Problemas com infraestrutura, Cerner, equipamentos, materiais ou medicamentos?</td>
+        <td><input type="radio" name="q9" value="Não"></td>
+        <td><input type="radio" name="q9" value="Sim"></td>
+        <td><input type="text" name="q9_quais"></td>
+        <td><input type="text" name="q9_devolutiva"></td>
+      </tr>
+      <tr>
+        <td>10. Algum paciente elegível para a visita multiprofissional ou discussão do time diagnóstico?</td>
+        <td><input type="radio" name="q10" value="Não"></td>
+        <td><input type="radio" name="q10" value="Sim"></td>
+        <td><input type="text" name="q10_quais"></td>
+        <td><input type="text" name="q10_devolutiva"></td>
+      </tr>
+      <tr>
+        <td>11. Outros:</td>
+        <td><input type="radio" name="q11" value="Não"></td>
+        <td><input type="radio" name="q11" value="Sim"></td>
+        <td><input type="text" name="q11_quais"></td>
+        <td><input type="text" name="q11_devolutiva"></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <button id="btnSavePdf">Salvar PDF</button>
+</div>
 
 <script>
-  // Config Firebase (use o seu mesmo)
-  const firebaseConfig = {
-    apiKey: "AIzaSyBLmbarQp31Sqs0_VsYdE-OWdUlYO4WT7M",
-    authDomain: "safety-leste.firebaseapp.com",
-    databaseURL: "https://safety-leste-default-rtdb.firebaseio.com",
-    projectId: "safety-leste",
-    storageBucket: "safety-leste.firebasestorage.app",
-    messagingSenderId: "922824064168",
-    appId: "1:922824064168:web:d89c1c2fc24860b2cbd69d",
-    measurementId: "G-G59DD5DB64"
-  };
+  const { jsPDF } = window.jspdf;
 
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
-  const ref = db.ref('safety-huddle');
+  document.getElementById('btnSavePdf').addEventListener('click', () => {
+    const doc = new jsPDF('p', 'pt', 'a4');
+    let y = 20;
+    doc.setFontSize(18);
+    doc.text('Safety Huddle Local', 40, y);
+    y += 30;
+    doc.setFontSize(12);
 
-  // Lista todos os campos que salvamos
-  const camposSimples = ['data','hora','tempo','leitos','previsoes','interditados'];
-  const checkboxes = ['enfermeiros','fisioterapeuta','nutricionistas','tecnicos','auxiliares'];
-
-  // Perguntas
-  const perguntas = [];
-  for(let i=1; i<=11; i++){
-    perguntas.push(`q${i}`);
-    perguntas.push(`q${i}_quais`);
-    perguntas.push(`q${i}_devolutiva`);
-  }
-
-  // Função que salva campo simples
-  function salvarCampo(id, valor){
-    ref.child(id).set(valor);
-  }
-  // Função que salva checkbox
-  function salvarCheckbox(id, checked){
-    ref.child(id).set(checked);
-  }
-  // Função que salva radio
-  function salvarRadio(name, valor){
-    ref.child(name).set(valor);
-  }
-
-  // Pega valor salvo no DB e preenche inputs
-  function preencherCampos(data){
-    if(!data) return;
-
-    camposSimples.forEach(id => {
-      if(data[id] !== undefined) {
-        document.getElementById(id).value = data[id];
-      }
-    });
-
-    checkboxes.forEach(id => {
-      if(data[id] !== undefined) {
-        document.getElementById(id).checked = data[id];
-      }
-    });
-
-    for(let i=1; i<=11; i++) {
-      if(data[`q${i}`] !== undefined) {
-        const radios = document.getElementsByName(`q${i}`);
-        radios.forEach(radio => {
-          radio.checked = (radio.value === data[`q${i}`]);
-        });
-      }
-      if(data[`q${i}_quais`] !== undefined) {
-        document.getElementById(`q${i}_quais`).value = data[`q${i}_quais`];
-      }
-      if(data[`q${i}_devolutiva`] !== undefined) {
-        document.getElementById(`q${i}_devolutiva`).value = data[`q${i}_devolutiva`];
-      }
+    function getInputValue(id) {
+      const el = document.getElementById(id);
+      return el ? el.value || '' : '';
     }
-  }
 
-  // Ao mudar qualquer campo, salvar no Firebase
-  // Campos simples
-  camposSimples.forEach(id => {
-    const el = document.getElementById(id);
-    el.addEventListener('input', e => salvarCampo(id, e.target.value));
-  });
+    function getCheckboxValues(className) {
+      const checked = [...document.querySelectorAll(`.${className}:checked`)];
+      return checked.map(chk => chk.value).join(', ');
+    }
 
-  // Checkboxes
-  checkboxes.forEach(id => {
-    const el = document.getElementById(id);
-    el.addEventListener('change', e => salvarCheckbox(id, e.target.checked));
-  });
+    doc.text(`Data: ${getInputValue('inputDate')}`, 40, y);
+    y += 15;
+    doc.text(`Tempo Gasto (min): ${getInputValue('inputTime')}`, 40, y);
+    y += 15;
+    doc.text(`Equipe do Huddle: ${getCheckboxValues('team-member')}`, 40, y);
+    y += 15;
+    doc.text(`Leitos Ocupados: ${getInputValue('bedsOccupied')}`, 40, y);
+    y += 15;
+    doc.text(`Previsões de Alta: ${getInputValue('forecastDischarge')}`, 40, y);
+    y += 15;
+    doc.text(`Leitos interditados: ${getInputValue('blockedBeds')}`, 40, y);
+    y += 15;
+    doc.text(`Contingência/leitos extras: ${getInputValue('extraBeds')}`, 40, y);
+    y += 25;
 
-  // Radios perguntas
-  for(let i=1; i<=11; i++) {
-    const radios = document.getElementsByName(`q${i}`);
-    radios.forEach(radio => {
-      radio.addEventListener('change', e => {
-        if(e.target.checked) {
-          salvarRadio(`q${i}`, e.target.value);
-        }
-      });
+    // Perguntas e respostas
+    const perguntas = [];
+    for (let i = 1; i <= 11; i++) {
+      const qText = document.querySelector(`tbody tr:nth-child(${i}) td:first-child`).innerText.trim();
+      const radios = document.getElementsByName('q'+i);
+      let radioValue = '';
+      radios.forEach(r => { if (r.checked) radioValue = r.value; });
+      const quais = document.querySelector(`[name="q${i}_quais"]`).value.trim();
+      const devolutiva = document.querySelector(`[name="q${i}_devolutiva"]`).value.trim();
+
+      perguntas.push({ qText, radioValue, quais, devolutiva });
+    }
+
+    perguntas.forEach(p => {
+      if (y > 760) {
+        doc.addPage();
+        y = 20;
+      }
+      doc.setFont(undefined, 'bold');
+      doc.text(p.qText, 40, y);
+      y += 15;
+      doc.setFont(undefined, 'normal');
+      doc.text(`Resposta: ${p.radioValue || 'Não respondido'}`, 50, y);
+      y += 15;
+      doc.text(`Quais? ${p.quais || '-'}`, 50, y);
+      y += 15;
+      doc.text(`Devolutiva: ${p.devolutiva || '-'}`, 50, y);
+      y += 25;
     });
-  }
 
-  // Campos textos "quais" e "devolutiva"
-  for(let i=1; i<=11; i++) {
-    document.getElementById(`q${i}_quais`).addEventListener('input', e => {
-      salvarCampo(`q${i}_quais`, e.target.value);
-    });
-    document.getElementById(`q${i}_devolutiva`).addEventListener('input', e => {
-      salvarCampo(`q${i}_devolutiva`, e.target.value);
-    });
-  }
-
-  // Escuta alterações no Firebase e atualiza página
-  ref.on('value', snapshot => {
-    preencherCampos(snapshot.val());
+    doc.save('safety-huddle.pdf');
   });
 </script>
 
