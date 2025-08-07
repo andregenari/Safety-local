@@ -1,58 +1,137 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Safety Huddle Local</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 20px; }
-    .container { max-width: 900px; margin: auto; }
-    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    .container { max-width: 1000px; margin: auto; }
+    table { border-collapse: collapse; width: 100%; margin-top: 18px; }
     th, td { border: 1px solid #ddd; padding: 8px; vertical-align: top; }
-    th { background: #f2f2f2; }
-    label { display: inline-block; margin: 5px 10px 10px 0; }
-    input[type="text"], input[type="number"], input[type="date"], input[type="time"] {
-      width: 150px;
-    }
-    .checkbox-group label { margin-right: 15px; }
-    .rodape { margin-top: 30px; font-size: 0.85em; color: #555; }
+    th { background: #f7f7f7; }
+    label { margin-right: 12px; display:inline-block; }
+    input[type="text"], input[type="number"], input[type="date"], input[type="time"] { width: 170px; }
+    .checkbox-group label { margin-right: 18px; }
+    .rodape { margin-top: 24px; color:#555; font-size:0.9em; }
+    #status { margin-left: 10px; color: #006600; font-weight: bold; }
   </style>
 </head>
 <body>
   <div class="container">
     <h2>Safety Huddle Local</h2>
-    <div>
-      <label>Data: <input type="date" id="data" /></label>
-      <label>Hora: <input type="time" id="hora" /></label>
-      <label>Tempo Gasto (min): <input type="number" id="tempo" /></label>
+
+    <div class="top">
+      <label>Data: <input type="date" id="data"></label>
+      <label>Hora: <input type="time" id="hora"></label>
+      <label>Tempo Gasto Minutos: <input type="number" id="tempo" min="0"></label>
+      <span id="status"></span>
     </div>
 
-    <div class="checkbox-group">
-      <strong>Equipe do Huddle:</strong><br />
-      <label><input type="checkbox" id="enfermeiros" /> Enfermeiros</label>
-      <label><input type="checkbox" id="fisioterapeuta" /> Fisioterapeuta</label>
-      <label><input type="checkbox" id="nutricionistas" /> Nutricionistas</label>
-      <label><input type="checkbox" id="tecnicos" /> Técnicos</label>
-      <label><input type="checkbox" id="auxiliares" /> Auxiliares</label>
+    <div class="checkbox-group" style="margin-top:12px;">
+      <strong>Equipe do Huddle:</strong><br>
+      <label><input type="checkbox" id="enfermeiros"> Enfermeiros</label>
+      <label><input type="checkbox" id="fisioterapeuta"> Fisioterapeuta</label>
+      <label><input type="checkbox" id="nutricionistas"> Nutricionistas</label>
+      <label><input type="checkbox" id="tecnicos"> Técnicos</label>
+      <label><input type="checkbox" id="auxiliares"> Auxiliares</label>
     </div>
 
-    <div>
-      <label>Leitos Ocupados: <input type="text" id="leitos" /></label>
-      <label>Previsões de Alta: <input type="text" id="previsoes" /></label>
-      <label>Leitos Interditados: <input type="text" id="interditados" /></label>
+    <div class="info" style="margin-top:12px;">
+      <label>Número de Leitos Ocupados: <input type="text" id="leitos"></label>
+      <label>Previsões de Alta: <input type="text" id="previsoes"></label>
+      <label>Leitos interditados: <input type="text" id="interditados"></label>
     </div>
 
     <table>
       <thead>
         <tr>
-          <th>Pergunta</th>
+          <th style="width:30%;">Pergunta</th>
           <th>Não</th>
           <th>Sim</th>
           <th>Quais?</th>
-          <th>Devolutiva</th>
+          <th>Devolutiva do caso para a equipe</th>
         </tr>
       </thead>
-      <tbody id="tabela-perguntas"></tbody>
+      <tbody>
+        <tr>
+          <td>1. Paciente com gerenciamento de risco (farol amarelo ou vermelho)?</td>
+          <td><input type="radio" name="q1" value="nao"></td>
+          <td><input type="radio" name="q1" value="sim"></td>
+          <td><input type="text" id="q1_quais"></td>
+          <td><input type="text" id="q1_devolutiva"></td>
+        </tr>
+        <tr>
+          <td>2. Paciente “Whatcher” (seriamente preocupado, críticos ou instáveis?)</td>
+          <td><input type="radio" name="q2" value="nao"></td>
+          <td><input type="radio" name="q2" value="sim"></td>
+          <td><input type="text" id="q2_quais"></td>
+          <td><input type="text" id="q2_devolutiva"></td>
+        </tr>
+        <tr>
+          <td>3. Pacientes com alto risco de queda, resistentes às orientações e não aderente às medidas preventivas ou sem acompanhante?</td>
+          <td><input type="radio" name="q3" value="nao"></td>
+          <td><input type="radio" name="q3" value="sim"></td>
+          <td><input type="text" id="q3_quais"></td>
+          <td><input type="text" id="q3_devolutiva"></td>
+        </tr>
+        <tr>
+          <td>4. Pacientes com alto risco LP? Resistente às medidas preventivas?</td>
+          <td><input type="radio" name="q4" value="nao"></td>
+          <td><input type="radio" name="q4" value="sim"></td>
+          <td><input type="text" id="q4_quais"></td>
+          <td><input type="text" id="q4_devolutiva"></td>
+        </tr>
+        <tr>
+          <td>5. Divergências entre o plano terapêutico?</td>
+          <td><input type="radio" name="q5" value="nao"></td>
+          <td><input type="radio" name="q5" value="sim"></td>
+          <td><input type="text" id="q5_quais"></td>
+          <td><input type="text" id="q5_devolutiva"></td>
+        </tr>
+        <tr>
+          <td>6. Terapias, procedimentos, protocolos ou dispositivos de alto risco ou não habituais? (LP3 ou acima, Flebite 3 ou acima, erro de medicações, quedas, ICS)</td>
+          <td><input type="radio" name="q6" value="nao"></td>
+          <td><input type="radio" name="q6" value="sim"></td>
+          <td><input type="text" id="q6_quais"></td>
+          <td><input type="text" id="q6_devolutiva"></td>
+        </tr>
+        <tr>
+          <td>7. Houve a ocorrência de procedimentos invasivos não planejados ou situações de emergências?</td>
+          <td><input type="radio" name="q7" value="nao"></td>
+          <td><input type="radio" name="q7" value="sim"></td>
+          <td><input type="text" id="q7_quais"></td>
+          <td><input type="text" id="q7_devolutiva"></td>
+        </tr>
+        <tr>
+          <td>8. Eventos Adversos?</td>
+          <td><input type="radio" name="q8" value="nao"></td>
+          <td><input type="radio" name="q8" value="sim"></td>
+          <td><input type="text" id="q8_quais"></td>
+          <td><input type="text" id="q8_devolutiva"></td>
+        </tr>
+        <tr>
+          <td>9. Problemas com infraestrutura, Cerner, equipamentos, materiais ou medicamentos?</td>
+          <td><input type="radio" name="q9" value="nao"></td>
+          <td><input type="radio" name="q9" value="sim"></td>
+          <td><input type="text" id="q9_quais"></td>
+          <td><input type="text" id="q9_devolutiva"></td>
+        </tr>
+        <tr>
+          <td>10. Algum paciente elegível para a visita multiprofissional ou discussão do time diagnóstico?</td>
+          <td><input type="radio" name="q10" value="nao"></td>
+          <td><input type="radio" name="q10" value="sim"></td>
+          <td><input type="text" id="q10_quais"></td>
+          <td><input type="text" id="q10_devolutiva"></td>
+        </tr>
+        <tr>
+          <td>11. Outros:</td>
+          <td><input type="radio" name="q11" value="nao"></td>
+          <td><input type="radio" name="q11" value="sim"></td>
+          <td><input type="text" id="q11_quais"></td>
+          <td><input type="text" id="q11_devolutiva"></td>
+        </tr>
+      </tbody>
     </table>
 
     <p class="rodape">
@@ -60,11 +139,12 @@
     </p>
   </div>
 
-  <!-- Firebase -->
+  <!-- Firebase compat SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
   <script>
+    // ----------------- CONFIGURE AQUI (já com as chaves que você usou antes) -----------------
     const firebaseConfig = {
       apiKey: "AIzaSyBLmbarQp31Sqs0_VsYdE-OWdUlYO4WT7M",
       authDomain: "safety-leste.firebaseapp.com",
@@ -75,89 +155,153 @@
       appId: "1:922824064168:web:d89c1c2fc24860b2cbd69d",
       measurementId: "G-G59DD5DB64"
     };
+    // -----------------------------------------------------------------------------------------
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-    const ref = db.ref("safety-huddle");
 
-    const campos = ['data', 'hora', 'tempo', 'leitos', 'previsoes', 'interditados'];
-    const checkboxes = ['enfermeiros', 'fisioterapeuta', 'nutricionistas', 'tecnicos', 'auxiliares'];
+    // Nomes que vamos checar (tenta encontrar o que existe no seu DB)
+    const NODES_TO_TRY = ['safety-huddle', 'safetyHuddle', 'safetyHuddleRoot', 'safety_huddle'];
+    const PREFERRED_NODE = 'safety-huddle'; // default se nenhum existir
 
-    // Gera perguntas dinamicamente
-    const tbody = document.getElementById("tabela-perguntas");
-    for (let i = 1; i <= 11; i++) {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${i}. Pergunta ${i}?</td>
-        <td><input type="radio" name="q${i}" value="nao"></td>
-        <td><input type="radio" name="q${i}" value="sim"></td>
-        <td><input type="text" id="q${i}_quais"></td>
-        <td><input type="text" id="q${i}_devolutiva"></td>
-      `;
-      tbody.appendChild(tr);
+    let dbNode = null;   // será definido dinamicamente
+    let ref = null;
+
+    const statusEl = document.getElementById('status');
+
+    // Detecta nó existente (ou cria o preferido)
+    async function pickDbNode() {
+      for (const n of NODES_TO_TRY) {
+        try {
+          const snap = await db.ref(n).get();
+          if (snap.exists()) {
+            return n;
+          }
+        } catch (err) {
+          console.warn('Erro ao checar nó', n, err);
+        }
+      }
+      // se nenhum existe, cria o preferido com um valor inicial mínimo
+      await db.ref(PREFERRED_NODE).set({ inicial: 'ok' });
+      return PREFERRED_NODE;
     }
 
+    // Atualiza inputs da página com dados do snapshot
     function atualizarCampos(data) {
       if (!data) return;
-
-      campos.forEach(id => {
-        if (data[id]) document.getElementById(id).value = data[id];
+      // campos simples
+      const simples = ['data','hora','tempo','leitos','previsoes','interditados'];
+      simples.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && data[id] !== undefined && data[id] !== null) el.value = data[id];
       });
 
-      checkboxes.forEach(id => {
-        if (data[id] !== undefined) document.getElementById(id).checked = data[id];
+      // checkboxes
+      const boxes = ['enfermeiros','fisioterapeuta','nutricionistas','tecnicos','auxiliares'];
+      boxes.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && data[id] !== undefined) el.checked = !!data[id];
       });
 
-      for (let i = 1; i <= 11; i++) {
-        if (data[`q${i}`]) {
-          document.querySelectorAll(`input[name="q${i}"]`).forEach(el => {
-            el.checked = (el.value === data[`q${i}`]);
-          });
+      // perguntas q1..q11
+      for (let i=1; i<=11; i++) {
+        const qKey = 'q' + i;
+        if (data[qKey] !== undefined) {
+          const radios = document.getElementsByName(qKey);
+          for (const r of radios) r.checked = (r.value === data[qKey]);
         }
-        if (data[`q${i}_quais`]) {
-          document.getElementById(`q${i}_quais`).value = data[`q${i}_quais`];
+        const quais = data[`${qKey}_quais`];
+        if (quais !== undefined) {
+          const el = document.getElementById(`${qKey}_quais`);
+          if (el) el.value = quais;
         }
-        if (data[`q${i}_devolutiva`]) {
-          document.getElementById(`q${i}_devolutiva`).value = data[`q${i}_devolutiva`];
+        const devol = data[`${qKey}_devolutiva`];
+        if (devol !== undefined) {
+          const el = document.getElementById(`${qKey}_devolutiva`);
+          if (el) el.value = devol;
         }
       }
     }
 
-    ref.on("value", snapshot => {
-      atualizarCampos(snapshot.val());
-    });
-
-    function salvar(id, valor) {
-      ref.child(id).set(valor);
+    // salva um campo no DB (por child) para não sobrescrever toda a estrutura
+    function salvarCampo(key, valor) {
+      if (!ref) return;
+      try {
+        ref.child(key).set(valor);
+        showStatus('salvo');
+      } catch (err) {
+        console.error('Erro ao salvar', key, err);
+        showStatus('erro ao salvar');
+      }
     }
 
-    campos.forEach(id => {
-      document.getElementById(id).addEventListener("input", e => {
-        salvar(id, e.target.value);
-      });
-    });
+    // mostra status curtinho
+    let statusTimer = null;
+    function showStatus(txt) {
+      if (!statusEl) return;
+      statusEl.textContent = txt;
+      clearTimeout(statusTimer);
+      statusTimer = setTimeout(()=> { statusEl.textContent = ''; }, 1200);
+    }
 
-    checkboxes.forEach(id => {
-      document.getElementById(id).addEventListener("change", e => {
-        salvar(id, e.target.checked);
+    // adiciona listeners a todos os inputs para salvar automaticamente
+    function attachListeners() {
+      // campos simples
+      const simples = ['data','hora','tempo','leitos','previsoes','interditados'];
+      simples.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', e => salvarCampo(id, e.target.value));
       });
-    });
 
-    for (let i = 1; i <= 11; i++) {
-      document.querySelectorAll(`input[name="q${i}"]`).forEach(el => {
-        el.addEventListener("change", e => {
-          if (e.target.checked) salvar(`q${i}`, e.target.value);
+      // checkboxes
+      const boxes = ['enfermeiros','fisioterapeuta','nutricionistas','tecnicos','auxiliares'];
+      boxes.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('change', e => salvarCampo(id, e.target.checked));
+      });
+
+      // radios e text inputs das perguntas
+      for (let i=1; i<=11; i++) {
+        // radios
+        const radios = document.getElementsByName('q'+i);
+        radios.forEach(r => r.addEventListener('change', e => {
+          if (e.target.checked) salvarCampo('q'+i, e.target.value);
+        }));
+        // quais
+        const qEl = document.getElementById(`q${i}_quais`);
+        if (qEl) qEl.addEventListener('input', e => salvarCampo(`q${i}_quais`, e.target.value));
+        // devolutiva
+        const dEl = document.getElementById(`q${i}_devolutiva`);
+        if (dEl) dEl.addEventListener('input', e => salvarCampo(`q${i}_devolutiva`, e.target.value));
+      }
+    }
+
+    // inicia tudo: escolhe nó, configura ref, carrega e escuta alterações em tempo real
+    (async function init() {
+      try {
+        dbNode = await pickDbNode();
+        ref = db.ref(dbNode);
+
+        // Carrega uma vez (populate) e depois escuta alterações em tempo real
+        const snap = await ref.get();
+        if (snap.exists()) {
+          atualizarCampos(snap.val());
+        }
+
+        // configuração real-time: quando qualquer cliente alterar, atualiza inputs
+        ref.on('value', snapshot => {
+          const data = snapshot.val();
+          if (!data) return;
+          atualizarCampos(data);
         });
-      });
 
-      document.getElementById(`q${i}_quais`).addEventListener("input", e => {
-        salvar(`q${i}_quais`, e.target.value);
-      });
-
-      document.getElementById(`q${i}_devolutiva`).addEventListener("input", e => {
-        salvar(`q${i}_devolutiva`, e.target.value);
-      });
-    }
+        attachListeners();
+        showStatus('conectado');
+      } catch (err) {
+        console.error('Erro init:', err);
+        showStatus('erro conexão');
+      }
+    })();
   </script>
 </body>
 </html>
