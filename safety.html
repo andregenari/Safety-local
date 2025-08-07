@@ -1,163 +1,45 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Safety Huddle Local</title>
-
-<style>
-  body { font-family: Arial, sans-serif; margin: 20px; background: #f9f9f9; }
-  .container { max-width: 960px; margin: auto; background: #fff; padding: 20px; box-shadow: 0 0 8px rgba(0,0,0,0.1);}
-  h2 { text-align: center; margin-bottom: 1rem; }
-  label { margin-right: 15px; }
-  .top, .checkbox-group, .info { margin-bottom: 15px; }
-  .checkbox-group label { display: inline-block; margin-right: 10px; }
-  table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; font-size: 14px; }
-  th, td { border: 1px solid #666; padding: 6px 8px; text-align: left; vertical-align: middle; }
-  th { background: #eee; }
-  td input[type="radio"] { display: block; margin: auto; }
-  td input[type="text"] { width: 95%; padding: 3px 5px; }
-  .rodape { font-size: 12px; color: #333; margin-top: 1rem; }
-  button { margin-right: 10px; padding: 8px 15px; font-size: 14px; cursor: pointer; }
-</style>
-
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-
-<!-- jsPDF and html2canvas for PDF generation -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-
+  <meta charset="UTF-8" />
+  <title>Safety Huddle</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 </head>
 <body>
-  <div class="container">
-    <h2>Safety Huddle Local</h2>
-    <div class="top">
-      <label>Data: <input id="inputDate" type="date" /></label>
-      <label>Tempo Gasto: <input id="inputTempo" type="number" min="0" /> min</label>
-    </div>
+  <h1>Safety Huddle Local</h1>
+  <input id="data" placeholder="Data" />
+  <input id="hora" placeholder="Hora" />
+  <input id="tempo" placeholder="Tempo" />
 
-    <div class="checkbox-group">
-      <strong>Equipe do Huddle:</strong><br>
-      <label><input type="checkbox" id="chkEnfermeiros" /> Enfermeiros</label>
-      <label><input type="checkbox" id="chkFisioterapeuta" /> Fisioterapeuta</label>
-      <label><input type="checkbox" id="chkNutricionistas" /> Nutricionistas</label>
-      <label><input type="checkbox" id="chkTecnicos" /> Técnicos</label>
-      <label><input type="checkbox" id="chkAuxiliares" /> Auxiliares</label>
-    </div>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBLmbarQp31Sqs0_VsYdE-OWdUlYO4WT7M",
+      authDomain: "safety-leste.firebaseapp.com",
+      databaseURL: "https://safety-leste-default-rtdb.firebaseio.com",
+      projectId: "safety-leste",
+      storageBucket: "safety-leste.appspot.com",
+      messagingSenderId: "922824064168",
+      appId: "1:922824064168:web:d89c1c2fc24860b2cbd69d"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const ref = db.ref("safety-huddle");
 
-    <div class="info">
-      <label>Número de Leitos Ocupados: <input id="inputLeitosOcupados" type="text" /></label>
-      <label>Previsões de Alta: <input id="inputPrevisoesAlta" type="text" /></label>
-      <label>Leitos interditados: <input id="inputLeitosInterditados" type="text" /></label>
-      <label>Contingência/leitos extras: <input id="inputContingencia" type="text" /></label>
-    </div>
+    ["data", "hora", "tempo"].forEach(id => {
+      const el = document.getElementById(id);
+      el.addEventListener("input", () => {
+        ref.child(id).set(el.value);
+      });
+    });
 
-    <table id="huddleTable" >
-      <thead>
-        <tr>
-          <th style="width: 30%">Pergunta</th>
-          <th style="width: 7%">Não</th>
-          <th style="width: 7%">Sim</th>
-          <th style="width: 26%">Quais?</th>
-          <th style="width: 30%">Devolutiva do caso para a equipe</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>1. Paciente com gerenciamento de risco (farol vermelho ou amarelo)?</td>
-          <td><input type="radio" name="q1" value="nao" /></td>
-          <td><input type="radio" name="q1" value="sim" /></td>
-          <td><input type="text" name="q1_quais" /></td>
-          <td><input type="text" name="q1_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>2. Paciente “Watcher” (seriamente preocupado, críticos ou instáveis?)</td>
-          <td><input type="radio" name="q2" value="nao" /></td>
-          <td><input type="radio" name="q2" value="sim" /></td>
-          <td><input type="text" name="q2_quais" /></td>
-          <td><input type="text" name="q2_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>3. Pacientes com alto risco de queda, resistentes às orientações e não aderentes às medidas preventivas ou sem acompanhante? Polifarmacêutica? Farmacêutico ciente?</td>
-          <td><input type="radio" name="q3" value="nao" /></td>
-          <td><input type="radio" name="q3" value="sim" /></td>
-          <td><input type="text" name="q3_quais" /></td>
-          <td><input type="text" name="q3_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>4. Pacientes com alto risco de LP? Resistente às medidas preventivas?</td>
-          <td><input type="radio" name="q4" value="nao" /></td>
-          <td><input type="radio" name="q4" value="sim" /></td>
-          <td><input type="text" name="q4_quais" /></td>
-          <td><input type="text" name="q4_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>5. Divergências entre o plano terapêutico?</td>
-          <td><input type="radio" name="q5" value="nao" /></td>
-          <td><input type="radio" name="q5" value="sim" /></td>
-          <td><input type="text" name="q5_quais" /></td>
-          <td><input type="text" name="q5_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>6. Terapias, procedimentos, protocolos ou dispositivos de alto risco ou não habituais? (LP3 ou acima, Flebite grau 3 ou acima, erro de medicações, Quedas, ICS)</td>
-          <td><input type="radio" name="q6" value="nao" /></td>
-          <td><input type="radio" name="q6" value="sim" /></td>
-          <td><input type="text" name="q6_quais" /></td>
-          <td><input type="text" name="q6_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>7. Houve a ocorrência de procedimentos invasivos não planejados ou situações de emergências?</td>
-          <td><input type="radio" name="q7" value="nao" /></td>
-          <td><input type="radio" name="q7" value="sim" /></td>
-          <td><input type="text" name="q7_quais" /></td>
-          <td><input type="text" name="q7_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>8. Eventos Adversos?</td>
-          <td><input type="radio" name="q8" value="nao" /></td>
-          <td><input type="radio" name="q8" value="sim" /></td>
-          <td><input type="text" name="q8_quais" /></td>
-          <td><input type="text" name="q8_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>9. Problemas com infraestrutura, Cerner, equipamentos, materiais ou medicamentos?</td>
-          <td><input type="radio" name="q9" value="nao" /></td>
-          <td><input type="radio" name="q9" value="sim" /></td>
-          <td><input type="text" name="q9_quais" /></td>
-          <td><input type="text" name="q9_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>10. Algum paciente elegível para a visita multiprofissional ou discussão do time diagnóstico?</td>
-          <td><input type="radio" name="q10" value="nao" /></td>
-          <td><input type="radio" name="q10" value="sim" /></td>
-          <td><input type="text" name="q10_quais" /></td>
-          <td><input type="text" name="q10_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>11. Outros:</td>
-          <td><input type="radio" name="q11" value="nao" /></td>
-          <td><input type="radio" name="q11" value="sim" /></td>
-          <td><input type="text" name="q11_quais" /></td>
-          <td><input type="text" name="q11_devolutiva" /></td>
-        </tr>
-      </tbody>
-    </table>
-
-    <p class="rodape">
-      *Fluxo de Escalonamento: Horário comercial comunicar sênior e Coordenador. Período noturno comunicar sênior e/ou supervisor administrativo. Nos finais de semana comunicar coordenador da área, não conseguindo contato acionar direto supervisor administrativo.
-    </p>
-
-    <button id="btnSave">Salvar no Firebase</button>
-    <button id="btnLoad">Carregar do Firebase</button>
-    <button id="btnPDF">Gerar PDF da Tabela</button>
-
-  </div>
-
-<script>
-  // Config Firebase (substitua pelos seus dados)
-  const firebaseConfig = {
-    apiKey: "SUA_API_KEY_AQUI",
-    authDomain: "SEU_AUTH_DOMAIN_AQUI",
-    databaseURL: "SUA_DATABASE_URL_A
+    ref.on("value", snap => {
+      const data = snap.val();
+      if (!data) return;
+      ["data", "hora", "tempo"].forEach(id => {
+        if (data[id]) document.getElementById(id).value = data[id];
+      });
+    });
+  </script>
+</body>
+</html>
