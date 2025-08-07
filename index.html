@@ -1,271 +1,52 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Safety Huddle Local</title>
-<style>
-  body { font-family: Arial, sans-serif; margin: 20px; background: #f9f9f9; }
-  .container { max-width: 960px; margin: auto; background: white; padding: 20px; border-radius: 6px; box-shadow: 0 0 8px rgba(0,0,0,0.1); }
-  h2 { margin-bottom: 10px; }
-  label { margin-right: 15px; }
-  .checkbox-group label, .info label { display: inline-block; margin-bottom: 8px; }
-  table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-  th, td { border: 1px solid #ccc; padding: 6px 8px; text-align: left; vertical-align: middle; }
-  th { background: #eee; }
-  input[type=text], input[type=number], input[type=date] { width: 100%; box-sizing: border-box; padding: 4px; }
-  input[type=radio] { transform: scale(1.2); margin-left: 10px; margin-right: 10px; }
-  .rodape { margin-top: 20px; font-size: 0.85em; color: #555; }
-  button { margin-top: 15px; padding: 10px 18px; font-size: 1em; cursor: pointer; border: none; background: #0055aa; color: white; border-radius: 4px; }
-  button:hover { background: #004080; }
-</style>
-</head>
-<body>
-<div class="container">
-  <h2>Safety Huddle Local</h2>
-  <div class="top">
-    <label>Data: <input type="date" id="date" /></label>
-    <label>Tempo Gasto: <input type="number" id="tempo" min="0" /> min</label>
-  </div>
-
-  <div class="checkbox-group">
-    <strong>Equipe do Huddle:</strong><br />
-    <label><input type="checkbox" id="enfermeiros" /> Enfermeiros</label>
-    <label><input type="checkbox" id="fisioterapeuta" /> Fisioterapeuta</label>
-    <label><input type="checkbox" id="nutricionistas" /> Nutricionistas</label>
-    <label><input type="checkbox" id="tecnicos" /> Técnicos</label>
-    <label><input type="checkbox" id="auxiliares" /> Auxiliares</label>
-  </div>
-
-  <div class="info">
-    <label>Número de Leitos Ocupados: <input type="text" id="leitosOcupados" /></label>
-    <label>Previsões de Alta: <input type="text" id="previsoesAlta" /></label>
-    <label>Leitos interditados: <input type="text" id="leitosInterditados" /></label>
-    <label>Contingência/leitos extras: <input type="text" id="contingencia" /></label>
-  </div>
-
-  <table id="huddleTable">
-    <thead>
-      <tr>
-        <th style="width: 30%">Pergunta</th>
-        <th>Não</th>
-        <th>Sim</th>
-        <th>Quais?</th>
-        <th>Devolutiva do caso para a equipe</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>1. Paciente com gerenciamento de risco (farol amarelo ou vermelho)?</td>
-        <td><input type="radio" name="q1" value="nao" /></td>
-        <td><input type="radio" name="q1" value="sim" /></td>
-        <td><input type="text" /></td>
-        <td><input type="text" /></td>
-      </tr>
-      <tr>
-        <td>2. Paciente “Watcher” (seriamente preocupado, críticos ou instáveis?)</td>
-        <td><input type="radio" name="q2" value="nao" /></td>
-        <td><input type="radio" name="q2" value="sim" /></td>
-        <td><input type="text" /></td>
-        <td><input type="text" /></td>
-      </tr>
-      <tr>
-        <td>3. Pacientes com alto risco de queda, resistentes às orientações e não aderente às medidas preventivas ou sem acompanhante?</td>
-        <td><input type="radio" name="q3" value="nao" /></td>
-        <td><input type="radio" name="q3" value="sim" /></td>
-        <td><input type="text" /></td>
-        <td><input type="text" /></td>
-      </tr>
-      <tr>
-        <td>4. Pacientes com alto risco LP? Resistente às medidas preventivas?</td>
-        <td><input type="radio" name="q4" value="nao" /></td>
-        <td><input type="radio" name="q4" value="sim" /></td>
-        <td><input type="text" /></td>
-        <td><input type="text" /></td>
-      </tr>
-      <tr>
-        <td>5. Divergências entre o plano terapêutico?</td>
-        <td><input type="radio" name="q5" value="nao" /></td>
-        <td><input type="radio" name="q5" value="sim" /></td>
-        <td><input type="text" /></td>
-        <td><input type="text" /></td>
-      </tr>
-      <tr>
-        <td>6. Terapias, procedimentos, protocolos ou dispositivos de alto risco ou não habituais?</td>
-        <td><input type="radio" name="q6" value="nao" /></td>
-        <td><input type="radio" name="q6" value="sim" /></td>
-        <td><input type="text" /></td>
-        <td><input type="text" /></td>
-      </tr>
-      <tr>
-        <td>7. Houve a ocorrência de procedimentos invasivos não planejados ou situações de emergências?</td>
-        <td><input type="radio" name="q7" value="nao" /></td>
-        <td><input type="radio" name="q7" value="sim" /></td>
-        <td><input type="text" /></td>
-        <td><input type="text" /></td>
-      </tr>
-      <tr>
-        <td>8. Eventos Adversos?</td>
-        <td><input type="radio" name="q8" value="nao" /></td>
-        <td><input type="radio" name="q8" value="sim" /></td>
-        <td><input type="text" /></td>
-        <td><input type="text" /></td>
-      </tr>
-      <tr>
-        <td>9. Problemas com infraestrutura, Cerner, equipamentos, materiais ou medicamentos?</td>
-        <td><input type="radio" name="q9" value="nao" /></td>
-        <td><input type="radio" name="q9" value="sim" /></td>
-        <td><input type="text" /></td>
-        <td><input type="text" /></td>
-      </tr>
-      <tr>
-        <td>10. Algum paciente elegível para a visita multiprofissional ou discussão do time diagnóstico?</td>
-        <td><input type="radio" name="q10" value="nao" /></td>
-        <td><input type="radio" name="q10" value="sim" /></td>
-        <td><input type="text" /></td>
-        <td><input type="text" /></td>
-      </tr>
-      <tr>
-        <td>11. Outros:</td>
-        <td><input type="radio" name="q11" value="nao" /></td>
-        <td><input type="radio" name="q11" value="sim" /></td>
-        <td><input type="text" /></td>
-        <td><input type="text" /></td>
-      </tr>
-    </tbody>
-  </table>
-
-  <button id="btnSavePdf">Salvar PDF</button>
-  <p class="rodape">*Fluxo de Escalonamento: Horário: ____________________________________</p>
-</div>
-
-<!-- jsPDF e html2canvas via CDN para gerar o PDF -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
-<script>
-  const STORAGE_KEY = 'safetyHuddleData';
-
-  // Carregar dados do localStorage e preencher inputs
-  function loadData() {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (!saved) return;
-
-    const data = JSON.parse(saved);
-
-    // inputs simples
-    if(data.date) document.getElementById('date').value = data.date;
-    if(data.tempo) document.getElementById('tempo').value = data.tempo;
-
-    // checkboxes equipe
-    ['enfermeiros','fisioterapeuta','nutricionistas','tecnicos','auxiliares'].forEach(id => {
-      document.getElementById(id).checked = !!data[id];
-    });
-
-    // inputs info
-    ['leitosOcupados', 'previsoesAlta', 'leitosInterditados', 'contingencia'].forEach(id => {
-      if(data[id]) document.getElementById(id).value = data[id];
-    });
-
-    // tabela inputs (radio + text)
-    // Para facilitar, percorremos todas as linhas e colunas relevantes
-    const table = document.getElementById('huddleTable');
-    for(let rowIndex=1; rowIndex < table.rows.length; rowIndex++) {
-      const row = table.rows[rowIndex];
-      const keyPrefix = 'q' + rowIndex;
-
-      // Radios: dois inputs, nome=qX, value=sim ou nao
-      ['nao','sim'].forEach(val => {
-        const radio = row.querySelector(`input[type=radio][name="${keyPrefix}"][value="${val}"]`);
-        if(radio) radio.checked = data[keyPrefix] === val;
-      });
-
-      // Col 4 e 5: text inputs
-      const textInputs = row.querySelectorAll('input[type=text]');
-      if(data[`${keyPrefix}_quais`] !== undefined && textInputs[0]) textInputs[0].value = data[`${keyPrefix}_quais`];
-      if(data[`${keyPrefix}_devolutiva`] !== undefined && textInputs[1]) textInputs[1].value = data[`${keyPrefix}_devolutiva`];
-    }
-  }
-
-  // Salvar dados no localStorage
+document.addEventListener("DOMContentLoaded", () => {
+  // Função que salva todos os inputs e radios da tabela no localStorage
   function saveData() {
-    const data = {};
+    const tbody = document.querySelector("table tbody");
+    const data = [];
+    tbody.querySelectorAll("tr").forEach((tr, index) => {
+      const cells = tr.querySelectorAll("td");
+      const radiosNao = cells[1].querySelector("input[type=radio]");
+      const radiosSim = cells[2].querySelector("input[type=radio]");
+      const quais = cells[3].querySelector("input").value;
+      const devolutiva = cells[4].querySelector("input").value;
 
-    // inputs simples
-    data.date = document.getElementById('date').value;
-    data.tempo = document.getElementById('tempo').value;
-
-    // checkboxes equipe
-    ['enfermeiros','fisioterapeuta','nutricionistas','tecnicos','auxiliares'].forEach(id => {
-      data[id] = document.getElementById(id).checked;
+      data[index] = {
+        naoChecked: radiosNao.checked,
+        simChecked: radiosSim.checked,
+        quais,
+        devolutiva
+      };
     });
-
-    // inputs info
-    ['leitosOcupados', 'previsoesAlta', 'leitosInterditados', 'contingencia'].forEach(id => {
-      data[id] = document.getElementById(id).value;
-    });
-
-    // tabela inputs (radio + text)
-    const table = document.getElementById('huddleTable');
-    for(let rowIndex=1; rowIndex < table.rows.length; rowIndex++) {
-      const row = table.rows[rowIndex];
-      const keyPrefix = 'q' + rowIndex;
-
-      // Radios: qual está checado?
-      const radios = row.querySelectorAll(`input[type=radio][name="${keyPrefix}"]`);
-      radios.forEach(r => {
-        if(r.checked) data[keyPrefix] = r.value;
-      });
-
-      // Col 4 e 5: text inputs
-      const textInputs = row.querySelectorAll('input[type=text]');
-      data[`${keyPrefix}_quais`] = textInputs[0]?.value || '';
-      data[`${keyPrefix}_devolutiva`] = textInputs[1]?.value || '';
-    }
-
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    localStorage.setItem("safetyHuddleData", JSON.stringify(data));
   }
 
-  // Salvar PDF usando html2canvas + jsPDF para capturar tabela com estilo e visual idêntico
-  async function savePdf() {
-    const { jsPDF } = window.jspdf;
-    const container = document.querySelector('.container');
+  // Função que carrega os dados do localStorage e preenche a tabela
+  function loadData() {
+    const dataStr = localStorage.getItem("safetyHuddleData");
+    if (!dataStr) return;
+    const data = JSON.parse(dataStr);
+    const tbody = document.querySelector("table tbody");
+    tbody.querySelectorAll("tr").forEach((tr, index) => {
+      const cells = tr.querySelectorAll("td");
+      if (!data[index]) return;
+      const radiosNao = cells[1].querySelector("input[type=radio]");
+      const radiosSim = cells[2].querySelector("input[type=radio]");
+      const quais = cells[3].querySelector("input");
+      const devolutiva = cells[4].querySelector("input");
 
-    // Captura a área inteira da container (título + inputs + tabela)
-    const canvas = await html2canvas(container, { scale: 2 });
-    const imgData = canvas.toDataURL('image/png');
-
-    // Criar pdf na orientação A4 retrato
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = pdf.internal.pageSize.getHeight();
-
-    // Ajustar imagem para caber no pdf, mantendo proporção
-    const imgProps = pdf.getImageProperties(imgData);
-    const pdfRatio = pdfWidth / pdfHeight;
-    const imgRatio = imgProps.width / imgProps.height;
-    let width, height;
-
-    if (imgRatio > pdfRatio) {
-      width = pdfWidth;
-      height = width / imgRatio;
-    } else {
-      height = pdfHeight;
-      width = height * imgRatio;
-    }
-
-    pdf.addImage(imgData, 'PNG', 0, 0, width, height);
-    pdf.save('SafetyHuddle.pdf');
+      radiosNao.checked = data[index].naoChecked;
+      radiosSim.checked = data[index].simChecked;
+      quais.value = data[index].quais;
+      devolutiva.value = data[index].devolutiva;
+    });
   }
 
-  // Salva ao mudar qualquer input automaticamente
-  document.addEventListener('input', saveData);
-  document.addEventListener('change', saveData);
-
-  document.getElementById('btnSavePdf').addEventListener('click', savePdf);
-
-  // Carrega dados ao abrir a página
+  // Chamar loadData no carregamento da página
   loadData();
-</script>
-</body>
-</html>
+
+  // Adicionar listeners para salvar ao alterar qualquer input ou radio da tabela
+  const tbody = document.querySelector("table tbody");
+  tbody.querySelectorAll("input").forEach(input => {
+    input.addEventListener("change", saveData);
+  });
+});
