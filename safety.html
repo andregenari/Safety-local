@@ -2,44 +2,152 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Safety Huddle</title>
+  <title>Safety Huddle Local</title>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 1000px;
+    }
+    th, td {
+      border: 1px solid black;
+      padding: 6px;
+      text-align: left;
+    }
+    th {
+      background-color: #ddd;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 20px auto;
+      font-family: Arial, sans-serif;
+    }
+    .top input, .info input {
+      margin: 5px 10px 5px 0;
+      padding: 4px;
+    }
+    .top label, .info label {
+      margin-right: 15px;
+    }
+    button {
+      margin-top: 15px;
+      padding: 8px 15px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-  <h1>Safety Huddle Local</h1>
-  <input id="data" placeholder="Data" />
-  <input id="hora" placeholder="Hora" />
-  <input id="tempo" placeholder="Tempo" />
+  <div class="container">
+    <h1>Safety Huddle Local</h1>
+    <div class="top">
+      <label>Data: <input type="date" id="data" /></label>
+      <label>Hora: <input type="time" id="hora" /></label>
+      <label>Tempo Gasto (min): <input type="number" min="0" id="tempo" /></label>
+    </div>
 
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBLmbarQp31Sqs0_VsYdE-OWdUlYO4WT7M",
-      authDomain: "safety-leste.firebaseapp.com",
-      databaseURL: "https://safety-leste-default-rtdb.firebaseio.com",
-      projectId: "safety-leste",
-      storageBucket: "safety-leste.appspot.com",
-      messagingSenderId: "922824064168",
-      appId: "1:922824064168:web:d89c1c2fc24860b2cbd69d"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    const ref = db.ref("safety-huddle");
+    <div class="checkbox-group">
+      <strong>Equipe do Huddle:</strong><br />
+      <label><input type="checkbox" id="enfermeiros" /> Enfermeiros</label>
+      <label><input type="checkbox" id="fisioterapeuta" /> Fisioterapeuta</label>
+      <label><input type="checkbox" id="nutricionistas" /> Nutricionistas</label>
+      <label><input type="checkbox" id="tecnicos" /> Técnicos</label>
+      <label><input type="checkbox" id="auxiliares" /> Auxiliares</label>
+    </div>
 
-    ["data", "hora", "tempo"].forEach(id => {
-      const el = document.getElementById(id);
-      el.addEventListener("input", () => {
-        ref.child(id).set(el.value);
-      });
-    });
+    <div class="info">
+      <label>Número de Leitos Ocupados: <input type="text" id="leitos_ocupados" /></label>
+      <label>Previsões de Alta: <input type="text" id="previsoes_alta" /></label>
+      <label>Leitos interditados: <input type="text" id="leitos_interditados" /></label>
+      <label>Contingência/leitos extras: <input type="text" id="contingencia_leitos" /></label>
+    </div>
 
-    ref.on("value", snap => {
-      const data = snap.val();
-      if (!data) return;
-      ["data", "hora", "tempo"].forEach(id => {
-        if (data[id]) document.getElementById(id).value = data[id];
-      });
-    });
-  </script>
-</body>
-</html>
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 30%;">Pergunta</th>
+          <th>Não</th>
+          <th>Sim</th>
+          <th>Quais?</th>
+          <th>Devolutiva do caso para a equipe</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Perguntas 1 a 11 -->
+        <!-- Cada pergunta tem radio Não e Sim com valores, dois inputs text com IDs -->
+        <tr>
+          <td>1. Paciente com gerenciamento de risco (farol amarelo ou vermelho)?</td>
+          <td><input type="radio" name="q1" value="nao" /></td>
+          <td><input type="radio" name="q1" value="sim" /></td>
+          <td><input type="text" id="q1_quais" /></td>
+          <td><input type="text" id="q1_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>2. Paciente “Whatcher” (seriamente preocupado, críticos ou instáveis?)</td>
+          <td><input type="radio" name="q2" value="nao" /></td>
+          <td><input type="radio" name="q2" value="sim" /></td>
+          <td><input type="text" id="q2_quais" /></td>
+          <td><input type="text" id="q2_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>3. Pacientes com alto risco de queda, resistentes às orientações e não aderente às medidas preventivas ou sem acompanhante?</td>
+          <td><input type="radio" name="q3" value="nao" /></td>
+          <td><input type="radio" name="q3" value="sim" /></td>
+          <td><input type="text" id="q3_quais" /></td>
+          <td><input type="text" id="q3_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>4. Pacientes com alto risco LP? Resistente às medidas preventivas?</td>
+          <td><input type="radio" name="q4" value="nao" /></td>
+          <td><input type="radio" name="q4" value="sim" /></td>
+          <td><input type="text" id="q4_quais" /></td>
+          <td><input type="text" id="q4_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>5. Divergências entre o plano terapêutico?</td>
+          <td><input type="radio" name="q5" value="nao" /></td>
+          <td><input type="radio" name="q5" value="sim" /></td>
+          <td><input type="text" id="q5_quais" /></td>
+          <td><input type="text" id="q5_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>6. Terapias, procedimentos, protocolos ou dispositivos de alto risco ou não habituais?</td>
+          <td><input type="radio" name="q6" value="nao" /></td>
+          <td><input type="radio" name="q6" value="sim" /></td>
+          <td><input type="text" id="q6_quais" /></td>
+          <td><input type="text" id="q6_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>7. Houve a ocorrência de procedimentos invasivos não planejados ou situações de emergências?</td>
+          <td><input type="radio" name="q7" value="nao" /></td>
+          <td><input type="radio" name="q7" value="sim" /></td>
+          <td><input type="text" id="q7_quais" /></td>
+          <td><input type="text" id="q7_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>8. Eventos Adversos?</td>
+          <td><input type="radio" name="q8" value="nao" /></td>
+          <td><input type="radio" name="q8" value="sim" /></td>
+          <td><input type="text" id="q8_quais" /></td>
+          <td><input type="text" id="q8_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>9. Problemas com infraestrutura, Cerner, equipamentos, materiais ou medicamentos?</td>
+          <td><input type="radio" name="q9" value="nao" /></td>
+          <td><input type="radio" name="q9" value="sim" /></td>
+          <td><input type="text" id="q9_quais" /></td>
+          <td><input type="text" id="q9_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>10. Algum paciente elegível para a visita multiprofissional ou discussão do time diagnóstico?</td>
+          <td><input type="radio" name="q10" value="nao" /></td>
+          <td><input type="radio" name="q10" value="sim" /></td>
+          <td><input type="text" id="q10_quais" /></td>
+          <td><input type="text" id="q10_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>11. Outros:</td>
+          <td><
