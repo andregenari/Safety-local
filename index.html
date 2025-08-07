@@ -1,45 +1,208 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>Safety Huddle</title>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Safety Huddle Local</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+  }
+  h2 {
+    text-align: center;
+  }
+  .container {
+    max-width: 1100px;
+    margin: auto;
+  }
+  .top label {
+    margin-right: 15px;
+  }
+  .checkbox-group label {
+    margin-right: 15px;
+  }
+  .info label {
+    display: inline-block;
+    width: 24%;
+    margin-right: 1%;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+  }
+  th, td {
+    border: 1px solid #555;
+    padding: 8px;
+    text-align: center;
+  }
+  th {
+    background: #eee;
+  }
+  td:first-child {
+    text-align: left;
+  }
+  .rodape {
+    font-size: 0.8em;
+    margin-top: 15px;
+    color: #555;
+  }
+  button {
+    margin-top: 20px;
+    padding: 10px 15px;
+    font-size: 1em;
+    cursor: pointer;
+  }
+</style>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
-  <h1>Safety Huddle Local</h1>
-  <input id="data" placeholder="Data" />
-  <input id="hora" placeholder="Hora" />
-  <input id="tempo" placeholder="Tempo" />
+  <div class="container">
+    <h2>Safety Huddle Local</h2>
 
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBLmbarQp31Sqs0_VsYdE-OWdUlYO4WT7M",
-      authDomain: "safety-leste.firebaseapp.com",
-      databaseURL: "https://safety-leste-default-rtdb.firebaseio.com",
-      projectId: "safety-leste",
-      storageBucket: "safety-leste.appspot.com",
-      messagingSenderId: "922824064168",
-      appId: "1:922824064168:web:d89c1c2fc24860b2cbd69d"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    const ref = db.ref("safety-huddle");
+    <div class="top">
+      <label>Data: <input type="date" id="data" /></label>
+      <label>Tempo Gasto: <input type="number" min="0" id="tempo" /> min</label>
+    </div>
 
-    ["data", "hora", "tempo"].forEach(id => {
-      const el = document.getElementById(id);
-      el.addEventListener("input", () => {
-        ref.child(id).set(el.value);
-      });
-    });
+    <div class="checkbox-group">
+      <strong>Equipe do Huddle:</strong><br />
+      <label><input type="checkbox" id="enfermeiros" /> Enfermeiros</label>
+      <label><input type="checkbox" id="fisioterapeuta" /> Fisioterapeuta</label>
+      <label><input type="checkbox" id="nutricionistas" /> Nutricionistas</label>
+      <label><input type="checkbox" id="tecnicos" /> Técnicos</label>
+      <label><input type="checkbox" id="auxiliares" /> Auxiliares</label>
+    </div>
 
-    ref.on("value", snap => {
-      const data = snap.val();
-      if (!data) return;
-      ["data", "hora", "tempo"].forEach(id => {
-        if (data[id]) document.getElementById(id).value = data[id];
-      });
-    });
-  </script>
-</body>
-</html>
+    <div class="info">
+      <label>Número de Leitos Ocupados: <input type="text" id="leitosOcupados" /></label>
+      <label>Previsões de Alta: <input type="text" id="previsoesAlta" /></label>
+      <label>Leitos interditados: <input type="text" id="leitosInterditados" /></label>
+      <label>Contingência/leitos extras: <input type="text" id="contingencia" /></label>
+    </div>
+
+    <table id="tabela">
+      <thead>
+        <tr>
+          <th style="width: 30%">Pergunta</th>
+          <th>Não</th>
+          <th>Sim</th>
+          <th>Quais?</th>
+          <th>Devolutiva do caso para a equipe</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1. Paciente com gerenciamento de risco (farol amarelo ou vermelho)?</td>
+          <td><input type="radio" name="q1" value="nao" /></td>
+          <td><input type="radio" name="q1" value="sim" /></td>
+          <td><input type="text" id="q1_quais" /></td>
+          <td><input type="text" id="q1_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>2. Paciente “Watcher” (seriamente preocupado, críticos ou instáveis?)</td>
+          <td><input type="radio" name="q2" value="nao" /></td>
+          <td><input type="radio" name="q2" value="sim" /></td>
+          <td><input type="text" id="q2_quais" /></td>
+          <td><input type="text" id="q2_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>3. Pacientes com alto risco de queda, resistentes às orientações e não aderente às medidas preventivas ou sem acompanhante? Polifarmáfica? Farmacêutico ciente?</td>
+          <td><input type="radio" name="q3" value="nao" /></td>
+          <td><input type="radio" name="q3" value="sim" /></td>
+          <td><input type="text" id="q3_quais" /></td>
+          <td><input type="text" id="q3_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>4. Pacientes com alto risco LP? Resistente às medidas preventivas?</td>
+          <td><input type="radio" name="q4" value="nao" /></td>
+          <td><input type="radio" name="q4" value="sim" /></td>
+          <td><input type="text" id="q4_quais" /></td>
+          <td><input type="text" id="q4_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>5. Divergências entre o plano terapêutico?</td>
+          <td><input type="radio" name="q5" value="nao" /></td>
+          <td><input type="radio" name="q5" value="sim" /></td>
+          <td><input type="text" id="q5_quais" /></td>
+          <td><input type="text" id="q5_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>6. Terapias, procedimentos, protocolos ou dispositivos de alto risco ou não habituais? (LP3 ou acima, Flebite grau 3 ou acima, erro de medicações, Quedas, ICS)</td>
+          <td><input type="radio" name="q6" value="nao" /></td>
+          <td><input type="radio" name="q6" value="sim" /></td>
+          <td><input type="text" id="q6_quais" /></td>
+          <td><input type="text" id="q6_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>7. Houve a ocorrência de procedimentos invasivos não planejados ou situações de emergências?</td>
+          <td><input type="radio" name="q7" value="nao" /></td>
+          <td><input type="radio" name="q7" value="sim" /></td>
+          <td><input type="text" id="q7_quais" /></td>
+          <td><input type="text" id="q7_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>8. Eventos Adversos?</td>
+          <td><input type="radio" name="q8" value="nao" /></td>
+          <td><input type="radio" name="q8" value="sim" /></td>
+          <td><input type="text" id="q8_quais" /></td>
+          <td><input type="text" id="q8_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>9. Problemas com infraestrutura, Cerner, equipamentos, materiais ou medicamentos?</td>
+          <td><input type="radio" name="q9" value="nao" /></td>
+          <td><input type="radio" name="q9" value="sim" /></td>
+          <td><input type="text" id="q9_quais" /></td>
+          <td><input type="text" id="q9_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>10. Algum paciente elegível para a visita multiprofissional ou discussão do time diagnóstico?</td>
+          <td><input type="radio" name="q10" value="nao" /></td>
+          <td><input type="radio" name="q10" value="sim" /></td>
+          <td><input type="text" id="q10_quais" /></td>
+          <td><input type="text" id="q10_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>11. Outros:</td>
+          <td><input type="radio" name="q11" value="nao" /></td>
+          <td><input type="radio" name="q11" value="sim" /></td>
+          <td><input type="text" id="q11_quais" /></td>
+          <td><input type="text" id="q11_devolutiva" /></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <button id="btnSalvar">Salvar no Firebase</button>
+    <button id="btnPDF">Gerar PDF</button>
+
+    <p class="rodape">
+      *Fluxo de Escalonamento: Horário comercial comunicar sênior e Coordenador. Período noturno comunicar sênior e/ou supervisor administrativo. Nos finais de semana comunicar coordenador da área, não conseguindo contato acionar direto supervisor administrativo.
+    </p>
+  </div>
+
+<script>
+  // Config Firebase
+  const firebaseConfig = {
+    apiKey: "COLOQUE_AQUI_SEU_API_KEY",
+    authDomain: "SEU_AUTH_DOMAIN",
+    databaseURL: "https://SEU_DATABASE_URL.firebaseio.com",
+    projectId: "SEU_PROJECT_ID",
+    storageBucket: "SEU_STORAGE_BUCKET.appspot.com",
+    messagingSenderId: "SEU_MESSAGING_SENDER_ID",
+    appId: "SEU_APP_ID"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
+
+  const path = "safety-huddle";
+
+  // Função pra salvar todos os dados no Firebase
+  function salvarFirebase() {
+    const data = document.getElementById("data").value;
+    const tempo = document.getElementById("tempo").value;
+
+   
