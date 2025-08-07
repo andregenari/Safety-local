@@ -1,208 +1,207 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Safety Huddle Local</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      background: #f7f7f7;
-    }
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      background: white;
-      padding: 15px 30px 30px 30px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    h2 {
-      text-align: center;
-      margin-bottom: 15px;
-    }
-    .top label {
-      margin-right: 20px;
-    }
-    .checkbox-group label {
-      margin-right: 15px;
-      user-select: none;
-    }
-    .info label {
-      display: inline-block;
-      margin-right: 20px;
-      margin-top: 10px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-      margin-bottom: 15px;
-    }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 6px 8px;
-      text-align: left;
-      vertical-align: middle;
-      font-size: 14px;
-    }
-    th {
-      background-color: #4a90e2;
-      color: white;
-    }
-    td input[type="radio"] {
-      display: block;
-      margin: auto;
-      cursor: pointer;
-    }
-    td input[type="text"], td input[type="date"], td input[type="number"] {
-      width: 100%;
-      box-sizing: border-box;
-      padding: 4px;
-      font-size: 13px;
-    }
-    .rodape {
-      font-size: 12px;
-      color: #444;
-      margin-top: 20px;
-    }
-    #btnSavePdf {
-      margin-top: 10px;
-      padding: 8px 15px;
-      font-size: 16px;
-      background-color: #4a90e2;
-      border: none;
-      color: white;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    #btnSavePdf:hover {
-      background-color: #357ABD;
-    }
-  </style>
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-  <!-- jsPDF -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Safety Huddle Local</title>
+<style>
+  body { font-family: Arial; margin: 20px; background: #f7f7f7; }
+  .container { max-width: 900px; margin: auto; background: #fff; padding: 20px; border-radius: 5px; }
+  h2 { text-align: center; }
+  table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+  th, td { border: 1px solid #ccc; padding: 8px; font-size: 14px; }
+  th { background: #4a90e2; color: white; }
+  input[type="text"], input[type="date"], input[type="number"] { width: 100%; box-sizing: border-box; padding: 5px; }
+  button { background: #4a90e2; color: white; border: none; padding: 10px 15px; cursor: pointer; border-radius: 4px; margin-top: 15px; }
+  button:hover { background: #357ABD; }
+</style>
+<!-- jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
-  <div class="container" id="formContainer">
-    <h2>Safety Huddle Local</h2>
-    <div class="top">
-      <label>Data: <input type="date" id="inputDate" /></label>
-      <label>Tempo Gasto: <input type="number" min="0" id="inputTime" /> min</label>
-    </div>
+<div class="container" id="formContainer">
+  <h2>Safety Huddle Local</h2>
+  
+  <label>Data: <input type="date" id="inputDate" /></label>
+  <label>Tempo Gasto (min): <input type="number" min="0" id="inputTime" /></label>
 
-    <div class="checkbox-group">
-      <strong>Equipe do Huddle:</strong><br />
-      <label><input type="checkbox" class="team-member" value="Enfermeiros" /> Enfermeiros</label>
-      <label><input type="checkbox" class="team-member" value="Fisioterapeuta" /> Fisioterapeuta</label>
-      <label><input type="checkbox" class="team-member" value="Nutricionistas" /> Nutricionistas</label>
-      <label><input type="checkbox" class="team-member" value="Técnicos" /> Técnicos</label>
-      <label><input type="checkbox" class="team-member" value="Auxiliares" /> Auxiliares</label>
-    </div>
+  <div>
+    <strong>Equipe do Huddle:</strong><br/>
+    <label><input type="checkbox" class="team-member" value="Enfermeiros">Enfermeiros</label>
+    <label><input type="checkbox" class="team-member" value="Fisioterapeuta">Fisioterapeuta</label>
+    <label><input type="checkbox" class="team-member" value="Nutricionistas">Nutricionistas</label>
+    <label><input type="checkbox" class="team-member" value="Técnicos">Técnicos</label>
+    <label><input type="checkbox" class="team-member" value="Auxiliares">Auxiliares</label>
+  </div>
 
-    <div class="info">
-      <label>Número de Leitos Ocupados: <input type="text" id="bedsOccupied" /></label>
-      <label>Previsões de Alta: <input type="text" id="forecastDischarge" /></label>
-      <label>Leitos interditados: <input type="text" id="blockedBeds" /></label>
-      <label>Contingência/leitos extras: <input type="text" id="extraBeds" /></label>
-    </div>
+  <label>Número de Leitos Ocupados: <input type="text" id="bedsOccupied" /></label>
+  <label>Previsões de Alta: <input type="text" id="forecastDischarge" /></label>
+  <label>Leitos interditados: <input type="text" id="blockedBeds" /></label>
+  <label>Contingência/leitos extras: <input type="text" id="extraBeds" /></label>
 
-    <table>
-      <thead>
-        <tr>
-          <th style="width: 30%;">Pergunta</th>
-          <th>Não</th>
-          <th>Sim</th>
-          <th>Quais?</th>
-          <th>Devolutiva do caso para a equipe</th>
-        </tr>
-      </thead>
-      <tbody id="questions-body">
-        <tr>
-          <td>1. Paciente com gerenciamento de risco (farol amarelo ou vermelho)?</td>
-          <td><input type="radio" name="q1" value="Não" /></td>
-          <td><input type="radio" name="q1" value="Sim" /></td>
-          <td><input type="text" name="q1_quais" /></td>
-          <td><input type="text" name="q1_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>2. Paciente “Whatcher” (seriamente preocupado, críticos ou instáveis?)</td>
-          <td><input type="radio" name="q2" value="Não" /></td>
-          <td><input type="radio" name="q2" value="Sim" /></td>
-          <td><input type="text" name="q2_quais" /></td>
-          <td><input type="text" name="q2_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>3. Pacientes com alto risco de queda, resistentes às orientações e não aderente às medidas preventivas ou sem acompanhante?</td>
-          <td><input type="radio" name="q3" value="Não" /></td>
-          <td><input type="radio" name="q3" value="Sim" /></td>
-          <td><input type="text" name="q3_quais" /></td>
-          <td><input type="text" name="q3_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>4. Pacientes com alto risco LP? Resistente às medidas preventivas?</td>
-          <td><input type="radio" name="q4" value="Não" /></td>
-          <td><input type="radio" name="q4" value="Sim" /></td>
-          <td><input type="text" name="q4_quais" /></td>
-          <td><input type="text" name="q4_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>5. Divergências entre o plano terapêutico?</td>
-          <td><input type="radio" name="q5" value="Não" /></td>
-          <td><input type="radio" name="q5" value="Sim" /></td>
-          <td><input type="text" name="q5_quais" /></td>
-          <td><input type="text" name="q5_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>6. Terapias, procedimentos, protocolos ou dispositivos de alto risco ou não habituais?</td>
-          <td><input type="radio" name="q6" value="Não" /></td>
-          <td><input type="radio" name="q6" value="Sim" /></td>
-          <td><input type="text" name="q6_quais" /></td>
-          <td><input type="text" name="q6_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>7. Houve a ocorrência de procedimentos invasivos não planejados ou situações de emergências?</td>
-          <td><input type="radio" name="q7" value="Não" /></td>
-          <td><input type="radio" name="q7" value="Sim" /></td>
-          <td><input type="text" name="q7_quais" /></td>
-          <td><input type="text" name="q7_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>8. Eventos Adversos?</td>
-          <td><input type="radio" name="q8" value="Não" /></td>
-          <td><input type="radio" name="q8" value="Sim" /></td>
-          <td><input type="text" name="q8_quais" /></td>
-          <td><input type="text" name="q8_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>9. Problemas com infraestrutura, Cerner, equipamentos, materiais ou medicamentos?</td>
-          <td><input type="radio" name="q9" value="Não" /></td>
-          <td><input type="radio" name="q9" value="Sim" /></td>
-          <td><input type="text" name="q9_quais" /></td>
-          <td><input type="text" name="q9_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>10. Algum paciente elegível para a visita multiprofissional ou discussão do time diagnóstico?</td>
-          <td><input type="radio" name="q10" value="Não" /></td>
-          <td><input type="radio" name="q10" value="Sim" /></td>
-          <td><input type="text" name="q10_quais" /></td>
-          <td><input type="text" name="q10_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>11. Outros:</td>
-          <td><input type="radio" name="q11" value="Não" /></td>
-          <td><input type="radio" name="q11" value="Sim" /></td>
-          <td><input type="text" name="q11_quais" /></td>
-          <td><input type="text" name="q11_devolutiva" /></td>
-        </tr>
-      </tbody>
-    </table>
+  <table>
+    <thead>
+      <tr>
+        <th>Pergunta</th>
+        <th>Não</th>
+        <th>Sim</th>
+        <th>Quais?</th>
+        <th>Devolutiva</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1. Paciente com gerenciamento de risco (farol amarelo ou vermelho)?</td>
+        <td><input type="radio" name="q1" value="Não"></td>
+        <td><input type="radio" name="q1" value="Sim"></td>
+        <td><input type="text" name="q1_quais"></td>
+        <td><input type="text" name="q1_devolutiva"></td>
+      </tr>
+      <tr>
+        <td>2. Paciente “Whatcher” (seriamente preocupado, críticos ou instáveis?)</td>
+        <td><input type="radio" name="q2" value="Não"></td>
+        <td><input type="radio" name="q2" value="Sim"></td>
+        <td><input type="text" name="q2_quais"></td>
+        <td><input type="text" name="q2_devolutiva"></td>
+      </tr>
+      <tr>
+        <td>3. Pacientes com alto risco de queda, resistentes às orientações e não aderente às medidas preventivas ou sem acompanhante?</td>
+        <td><input type="radio" name="q3" value="Não"></td>
+        <td><input type="radio" name="q3" value="Sim"></td>
+        <td><input type="text" name="q3_quais"></td>
+        <td><input type="text" name="q3_devolutiva"></td>
+      </tr>
+      <tr>
+        <td>4. Pacientes com alto risco LP? Resistente às medidas preventivas?</td>
+        <td><input type="radio" name="q4" value="Não"></td>
+        <td><input type="radio" name="q4" value="Sim"></td>
+        <td><input type="text" name="q4_quais"></td>
+        <td><input type="text" name="q4_devolutiva"></td>
+      </tr>
+      <tr>
+        <td>5. Divergências entre o plano terapêutico?</td>
+        <td><input type="radio" name="q5" value="Não"></td>
+        <td><input type="radio" name="q5" value="Sim"></td>
+        <td><input type="text" name="q5_quais"></td>
+        <td><input type="text" name="q5_devolutiva"></td>
+      </tr>
+      <tr>
+        <td>6. Terapias, procedimentos, protocolos ou dispositivos de alto risco ou não habituais?</td>
+        <td><input type="radio" name="q6" value="Não"></td>
+        <td><input type="radio" name="q6" value="Sim"></td>
+        <td><input type="text" name="q6_quais"></td>
+        <td><input type="text" name="q6_devolutiva"></td>
+      </tr>
+      <tr>
+        <td>7. Houve a ocorrência de procedimentos invasivos não planejados ou situações de emergências?</td>
+        <td><input type="radio" name="q7" value="Não"></td>
+        <td><input type="radio" name="q7" value="Sim"></td>
+        <td><input type="text" name="q7_quais"></td>
+        <td><input type="text" name="q7_devolutiva"></td>
+      </tr>
+      <tr>
+        <td>8. Eventos Adversos?</td>
+        <td><input type="radio" name="q8" value="Não"></td>
+        <td><input type="radio" name="q8" value="Sim"></td>
+        <td><input type="text" name="q8_quais"></td>
+        <td><input type="text" name="q8_devolutiva"></td>
+      </tr>
+      <tr>
+        <td>9. Problemas com infraestrutura, Cerner, equipamentos, materiais ou medicamentos?</td>
+        <td><input type="radio" name="q9" value="Não"></td>
+        <td><input type="radio" name="q9" value="Sim"></td>
+        <td><input type="text" name="q9_quais"></td>
+        <td><input type="text" name="q9_devolutiva"></td>
+      </tr>
+      <tr>
+        <td>10. Algum paciente elegível para a visita multiprofissional ou discussão do time diagnóstico?</td>
+        <td><input type="radio" name="q10" value="Não"></td>
+        <td><input type="radio" name="q10" value="Sim"></td>
+        <td><input type="text" name="q10_quais"></td>
+        <td><input type="text" name="q10_devolutiva"></td>
+      </tr>
+      <tr>
+        <td>11. Outros:</td>
+        <td><input type="radio" name="q11" value="Não"></td>
+        <td><input type="radio" name="q11" value="Sim"></td>
+        <td><input type="text" name="q11_quais"></td>
+        <td><input type="text" name="q11_devolutiva"></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <button id="btnSavePdf">Salvar PDF</button>
+</div>
 
-    <button id="btnSavePdf">Salvar PDF</button>
+<script>
+  const { jsPDF } = window.jspdf;
 
-    <p class="rodape">
-      *Fluxo de Escalonamento: Horário comercial comunicar sênior e Coordenador. Período noturno comunicar sênior e/ou supervisor administrativo. Nos finais de semana comunicar coordenador da área, não conseguindo contato
+  document.getElementById('btnSavePdf').addEventListener('click', () => {
+    const doc = new jsPDF('p', 'pt', 'a4');
+    let y = 20;
+    doc.setFontSize(18);
+    doc.text('Safety Huddle Local', 40, y);
+    y += 30;
+    doc.setFontSize(12);
+
+    function getInputValue(id) {
+      const el = document.getElementById(id);
+      return el ? el.value || '' : '';
+    }
+
+    function getCheckboxValues(className) {
+      const checked = [...document.querySelectorAll(`.${className}:checked`)];
+      return checked.map(chk => chk.value).join(', ');
+    }
+
+    doc.text(`Data: ${getInputValue('inputDate')}`, 40, y);
+    y += 15;
+    doc.text(`Tempo Gasto (min): ${getInputValue('inputTime')}`, 40, y);
+    y += 15;
+    doc.text(`Equipe do Huddle: ${getCheckboxValues('team-member')}`, 40, y);
+    y += 15;
+    doc.text(`Leitos Ocupados: ${getInputValue('bedsOccupied')}`, 40, y);
+    y += 15;
+    doc.text(`Previsões de Alta: ${getInputValue('forecastDischarge')}`, 40, y);
+    y += 15;
+    doc.text(`Leitos interditados: ${getInputValue('blockedBeds')}`, 40, y);
+    y += 15;
+    doc.text(`Contingência/leitos extras: ${getInputValue('extraBeds')}`, 40, y);
+    y += 25;
+
+    // Perguntas e respostas
+    const perguntas = [];
+    for (let i = 1; i <= 11; i++) {
+      const qText = document.querySelector(`tbody tr:nth-child(${i}) td:first-child`).innerText.trim();
+      const radios = document.getElementsByName('q'+i);
+      let radioValue = '';
+      radios.forEach(r => { if (r.checked) radioValue = r.value; });
+      const quais = document.querySelector(`[name="q${i}_quais"]`).value.trim();
+      const devolutiva = document.querySelector(`[name="q${i}_devolutiva"]`).value.trim();
+
+      perguntas.push({ qText, radioValue, quais, devolutiva });
+    }
+
+    perguntas.forEach(p => {
+      if (y > 760) {
+        doc.addPage();
+        y = 20;
+      }
+      doc.setFont(undefined, 'bold');
+      doc.text(p.qText, 40, y);
+      y += 15;
+      doc.setFont(undefined, 'normal');
+      doc.text(`Resposta: ${p.radioValue || 'Não respondido'}`, 50, y);
+      y += 15;
+      doc.text(`Quais? ${p.quais || '-'}`, 50, y);
+      y += 15;
+      doc.text(`Devolutiva: ${p.devolutiva || '-'}`, 50, y);
+      y += 25;
+    });
+
+    doc.save('safety-huddle.pdf');
+  });
+</script>
+
+</body>
+</html>
