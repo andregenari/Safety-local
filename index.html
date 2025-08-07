@@ -4,16 +4,80 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Safety Huddle Local</title>
-  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+    }
+
+    .top, .checkbox-group, .info, table, .rodape {
+      margin-top: 20px;
+    }
+
+    label {
+      display: block;
+      margin: 5px 0;
+    }
+
+    .checkbox-group label {
+      display: inline-block;
+      margin-right: 15px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    table th, table td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    table th {
+      background-color: #f2f2f2;
+    }
+
+    input[type="text"], input[type="date"], input[type="time"], input[type="number"] {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    input[type="radio"] {
+      transform: scale(1.2);
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 8px 16px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .rodape {
+      font-size: 12px;
+      margin-top: 30px;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
+  <div class="container" id="huddle-content">
     <h2>Safety Huddle Local</h2>
+
     <div class="top">
       <label>Data: <input type="date">
-  Hora: <input type="time"> </label>
-      <label>Tempo Gasto Minutos:<input type="number" min="0" /></label> <button id="btnPdf">Salvar PDF</button>
-</div>    </div> 
+      Hora: <input type="time"> </label>
+      <label>Tempo Gasto Minutos: <input type="number" min="0" /></label>
+      <button id="btnPdf">Salvar PDF</button>
+    </div>
 
     <div class="checkbox-group">
       <strong>Equipe do Huddle:</strong><br>
@@ -28,7 +92,6 @@
       <label>Número de Leitos Ocupados: <input type="text" /></label>
       <label>Previsões de Alta: <input type="text" /></label>
       <label>Leitos interditados: <input type="text" /></label>
-      
     </div>
 
     <table>
@@ -42,7 +105,6 @@
         </tr>
       </thead>
       <tbody>
-        <!-- Repita para cada pergunta -->
         <tr>
           <td>1. Paciente com gerenciamento de risco (farol amarelo ou vermelho)?</td>
           <td><input type="radio" name="q1" /></td>
@@ -79,7 +141,7 @@
           <td><input type="text" /></td>
         </tr>
         <tr>
-          <td>6. Terapias, procedimentos, protocolos ou dispositivos de alto risco ou não habituais? (LP3 ou acima, Flebite 3 ou acima, erro de medicações, quedas, ICS)</td>
+          <td>6. Terapias, procedimentos, protocolos ou dispositivos de alto risco ou não habituais?</td>
           <td><input type="radio" name="q6" /></td>
           <td><input type="radio" name="q6" /></td>
           <td><input type="text" /></td>
@@ -127,6 +189,23 @@
       *Fluxo de Escalonamento: Horário comercial comunicar sênior e Coordenador. Período noturno comunicar sênior e/ou supervisor administrativo. Nos finais de semana comunicar coordenador da área, não conseguindo contato acionar direto supervisor administrativo.
     </p>
   </div>
+
+  <!-- html2pdf.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script>
+    document.getElementById("btnPdf").addEventListener("click", () => {
+      const element = document.getElementById("huddle-content");
+
+      const opt = {
+        margin:       0.5,
+        filename:     'safety-huddle.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2 },
+        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+      };
+
+      html2pdf().set(opt).from(element).save();
+    });
+  </script>
 </body>
 </html>
-
