@@ -2,44 +2,264 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Safety Huddle</title>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Safety Huddle Local - Funcional</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #f9f9f9;
+    }
+    h2 {
+      text-align: center;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      background: white;
+      margin-top: 15px;
+    }
+    th, td {
+      border: 1px solid #333;
+      padding: 8px;
+      text-align: left;
+      vertical-align: middle;
+    }
+    th {
+      background: #004080;
+      color: white;
+    }
+    input[type="text"], input[type="date"], input[type="number"] {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 4px;
+    }
+    input[type="radio"] {
+      display: block;
+      margin: 0 auto;
+    }
+    .top {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+    .checkbox-group label {
+      margin-right: 15px;
+    }
+    .checkbox-group {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .info {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .info label {
+      flex: 1 1 200px;
+    }
+    .rodape {
+      margin-top: 15px;
+      font-size: 0.9em;
+      color: #444;
+      text-align: center;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-weight: bold;
+      cursor: pointer;
+      background: #004080;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  </style>
 </head>
 <body>
-  <h1>Safety Huddle Local</h1>
-  <input id="data" placeholder="Data" />
-  <input id="hora" placeholder="Hora" />
-  <input id="tempo" placeholder="Tempo" />
+  <div class="container">
+    <h2>Safety Huddle Local</h2>
 
+    <div class="top">
+      <label>Data: <input type="date" id="date" /></label>
+      <label>Tempo Gasto (min): <input type="number" min="0" id="timeSpent" /></label>
+    </div>
+
+    <div class="checkbox-group">
+      <strong>Equipe do Huddle:</strong><br />
+      <label><input type="checkbox" class="team" value="Enfermeiros" /> Enfermeiros</label>
+      <label><input type="checkbox" class="team" value="Fisioterapeuta" /> Fisioterapeuta</label>
+      <label><input type="checkbox" class="team" value="Nutricionistas" /> Nutricionistas</label>
+      <label><input type="checkbox" class="team" value="Técnicos" /> Técnicos</label>
+      <label><input type="checkbox" class="team" value="Auxiliares" /> Auxiliares</label>
+    </div>
+
+    <div class="info">
+      <label>Número de Leitos Ocupados: <input type="text" id="leitosOcupados" /></label>
+      <label>Previsões de Alta: <input type="text" id="previsoesAlta" /></label>
+      <label>Leitos interditados: <input type="text" id="leitosInterditados" /></label>
+      <label>Contingência / leitos extras: <input type="text" id="contingencia" /></label>
+    </div>
+
+    <table id="questionsTable">
+      <thead>
+        <tr>
+          <th style="width: 30%;">Pergunta</th>
+          <th>Não</th>
+          <th>Sim</th>
+          <th>Quais?</th>
+          <th>Devolutiva do caso para a equipe</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1. Paciente com gerenciamento de risco (farol amarelo ou vermelho)?</td>
+          <td><input type="radio" name="q1" value="Não" /></td>
+          <td><input type="radio" name="q1" value="Sim" /></td>
+          <td><input type="text" name="q1_quais" /></td>
+          <td><input type="text" name="q1_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>2. Paciente “Whatcher” (seriamente preocupado, críticos ou instáveis?)</td>
+          <td><input type="radio" name="q2" value="Não" /></td>
+          <td><input type="radio" name="q2" value="Sim" /></td>
+          <td><input type="text" name="q2_quais" /></td>
+          <td><input type="text" name="q2_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>3. Pacientes com alto risco de queda, resistentes às orientações e não aderente às medidas preventivas ou sem acompanhante?</td>
+          <td><input type="radio" name="q3" value="Não" /></td>
+          <td><input type="radio" name="q3" value="Sim" /></td>
+          <td><input type="text" name="q3_quais" /></td>
+          <td><input type="text" name="q3_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>4. Pacientes com alto risco LP? Resistente às medidas preventivas?</td>
+          <td><input type="radio" name="q4" value="Não" /></td>
+          <td><input type="radio" name="q4" value="Sim" /></td>
+          <td><input type="text" name="q4_quais" /></td>
+          <td><input type="text" name="q4_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>5. Divergências entre o plano terapêutico?</td>
+          <td><input type="radio" name="q5" value="Não" /></td>
+          <td><input type="radio" name="q5" value="Sim" /></td>
+          <td><input type="text" name="q5_quais" /></td>
+          <td><input type="text" name="q5_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>6. Terapias, procedimentos, protocolos ou dispositivos de alto risco ou não habituais?</td>
+          <td><input type="radio" name="q6" value="Não" /></td>
+          <td><input type="radio" name="q6" value="Sim" /></td>
+          <td><input type="text" name="q6_quais" /></td>
+          <td><input type="text" name="q6_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>7. Houve a ocorrência de procedimentos invasivos não planejados ou situações de emergências?</td>
+          <td><input type="radio" name="q7" value="Não" /></td>
+          <td><input type="radio" name="q7" value="Sim" /></td>
+          <td><input type="text" name="q7_quais" /></td>
+          <td><input type="text" name="q7_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>8. Eventos Adversos?</td>
+          <td><input type="radio" name="q8" value="Não" /></td>
+          <td><input type="radio" name="q8" value="Sim" /></td>
+          <td><input type="text" name="q8_quais" /></td>
+          <td><input type="text" name="q8_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>9. Problemas com infraestrutura, Cerner, equipamentos, materiais ou medicamentos?</td>
+          <td><input type="radio" name="q9" value="Não" /></td>
+          <td><input type="radio" name="q9" value="Sim" /></td>
+          <td><input type="text" name="q9_quais" /></td>
+          <td><input type="text" name="q9_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>10. Algum paciente elegível para a visita multiprofissional ou discussão do time diagnóstico?</td>
+          <td><input type="radio" name="q10" value="Não" /></td>
+          <td><input type="radio" name="q10" value="Sim" /></td>
+          <td><input type="text" name="q10_quais" /></td>
+          <td><input type="text" name="q10_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>11. Outros:</td>
+          <td><input type="radio" name="q11" value="Não" /></td>
+          <td><input type="radio" name="q11" value="Sim" /></td>
+          <td><input type="text" name="q11_quais" /></td>
+          <td><input type="text" name="q11_devolutiva" /></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="rodape">
+      *Fluxo de Escalonamento: Horário comercial comunicar sênior e Coordenador. Período noturno comunicar sênior e/ou supervisor administrativo. Nos finais de semana comunicar coordenador da área, não conseguindo contato acionar direto supervisor administrativo.
+    </p>
+
+    <button id="saveBtn">Salvar Dados</button>
+    <button id="generatePdfBtn">Gerar PDF</button>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBLmbarQp31Sqs0_VsYdE-OWdUlYO4WT7M",
-      authDomain: "safety-leste.firebaseapp.com",
-      databaseURL: "https://safety-leste-default-rtdb.firebaseio.com",
-      projectId: "safety-leste",
-      storageBucket: "safety-leste.appspot.com",
-      messagingSenderId: "922824064168",
-      appId: "1:922824064168:web:d89c1c2fc24860b2cbd69d"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    const ref = db.ref("safety-huddle");
+    const saveBtn = document.getElementById("saveBtn");
+    const generatePdfBtn = document.getElementById("generatePdfBtn");
 
-    ["data", "hora", "tempo"].forEach(id => {
-      const el = document.getElementById(id);
-      el.addEventListener("input", () => {
-        ref.child(id).set(el.value);
-      });
-    });
+    // Função para salvar dados no localStorage
+    function saveData() {
+      const data = {};
 
-    ref.on("value", snap => {
-      const data = snap.val();
-      if (!data) return;
-      ["data", "hora", "tempo"].forEach(id => {
-        if (data[id]) document.getElementById(id).value = data[id];
+      // Data e tempo gasto
+      data.date = document.getElementById("date").value;
+      data.timeSpent = document.getElementById("timeSpent").value;
+
+      // Equipe do huddle (checkboxes)
+      const teamCheckboxes = document.querySelectorAll(".team");
+      data.team = [];
+      teamCheckboxes.forEach(chk => {
+        if (chk.checked) data.team.push(chk.value);
       });
-    });
-  </script>
-</body>
-</html>
+
+      // Infos
+      data.leitosOcupados = document.getElementById("leitosOcupados").value;
+      data.previsoesAlta = document.getElementById("previsoesAlta").value;
+      data.leitosInterditados = document.getElementById("leitosInterditados").value;
+      data.contingencia = document.getElementById("contingencia").value;
+
+      // Perguntas (radio e textos)
+      data.questions = {};
+      for(let i=1; i<=11; i++) {
+        const radios = document.getElementsByName("q"+i);
+        let radioValue = "";
+        radios.forEach(r => {
+          if (r.checked) radioValue = r.value;
+        });
+        data.questions["q"+i] = {
+          answer: radioValue,
+          quais: document.getElementsByName("q"+i+"_quais")[0].value,
+          devolutiva: document.getElementsByName("q"+i+"_devolutiva")[0].value
+        };
+      }
+
+      localStorage.setItem("safetyHuddleData", JSON.stringify(data));
+      alert("Dados salvos localmente!");
+    }
+
+    // Função para carregar dados do localStorage
+    function loadData() {
+      const saved = localStorage.getItem("safetyHuddleData");
+      if (!saved) return;
+      const data = JSON.parse(saved);
+
+      document.getElementById("date").value = data.date || "";
+      document.getElementById("timeSpent
