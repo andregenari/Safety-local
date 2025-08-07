@@ -1,189 +1,90 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <title>Safety Huddle Local</title>
-  <style>
-    table, th, td {
-      border: 1px solid black;
-      border-collapse: collapse;
-      padding: 5px;
-    }
-    th {
-      background-color: #f2f2f2;
-    }
-    input[type="text"] {
-      width: 100%;
-      box-sizing: border-box;
-    }
-    .radio-cell {
-      text-align: center;
-      width: 50px;
-    }
-  </style>
-</head>
-<body>
-  <h2>Safety Huddle Local</h2>
-
-  <form id="safetyHuddleForm">
-    <table>
-      <thead>
-        <tr>
-          <th>Pergunta</th>
-          <th class="radio-cell">Não</th>
-          <th class="radio-cell">Sim</th>
-          <th>Quais?</th>
-          <th>Devolutiva</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>1. Paciente em gerenciamento de risco - farol vermelho ou amarelo?</td>
-          <td class="radio-cell"><input type="radio" name="q1" value="nao" /></td>
-          <td class="radio-cell"><input type="radio" name="q1" value="sim" /></td>
-          <td><input type="text" id="q1_quais" /></td>
-          <td><input type="text" id="q1_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>2. Paciente watcher - seriamente preocupado, críticos ou instáveis?</td>
-          <td class="radio-cell"><input type="radio" name="q2" value="nao" /></td>
-          <td class="radio-cell"><input type="radio" name="q2" value="sim" /></td>
-          <td><input type="text" id="q2_quais" /></td>
-          <td><input type="text" id="q2_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>3. Paciente com alto risco de queda, resistente à orientações e não aderentes as medidas preventivas ou sem acompanhante? Polifarmáica? Farmacêutico ciente?</td>
-          <td class="radio-cell"><input type="radio" name="q3" value="nao" /></td>
-          <td class="radio-cell"><input type="radio" name="q3" value="sim" /></td>
-          <td><input type="text" id="q3_quais" /></td>
-          <td><input type="text" id="q3_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>4. Pacientes com alto risco de LP? Resistente às medidas preventivas?</td>
-          <td class="radio-cell"><input type="radio" name="q4" value="nao" /></td>
-          <td class="radio-cell"><input type="radio" name="q4" value="sim" /></td>
-          <td><input type="text" id="q4_quais" /></td>
-          <td><input type="text" id="q4_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>5. Divergências entre o plano terapêutico?</td>
-          <td class="radio-cell"><input type="radio" name="q5" value="nao" /></td>
-          <td class="radio-cell"><input type="radio" name="q5" value="sim" /></td>
-          <td><input type="text" id="q5_quais" /></td>
-          <td><input type="text" id="q5_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>6. Terapias, procedimentos, protocolos ou dispositivos de alto risco ou não habituais?<br>(LP3 ou acima, Flebite grau 3 ou acima, erro de medicações, Quedas, ICS)</td>
-          <td class="radio-cell"><input type="radio" name="q6" value="nao" /></td>
-          <td class="radio-cell"><input type="radio" name="q6" value="sim" /></td>
-          <td><input type="text" id="q6_quais" /></td>
-          <td><input type="text" id="q6_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>7. Houve a ocorrência de procedimentos invasivos não planejados ou situações de emergências?</td>
-          <td class="radio-cell"><input type="radio" name="q7" value="nao" /></td>
-          <td class="radio-cell"><input type="radio" name="q7" value="sim" /></td>
-          <td><input type="text" id="q7_quais" /></td>
-          <td><input type="text" id="q7_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>8. Eventos Adversos?</td>
-          <td class="radio-cell"><input type="radio" name="q8" value="nao" /></td>
-          <td class="radio-cell"><input type="radio" name="q8" value="sim" /></td>
-          <td><input type="text" id="q8_quais" /></td>
-          <td><input type="text" id="q8_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>9. Problemas com infraestrutura, Cerner, equipamentos, materiais ou medicamentos?</td>
-          <td class="radio-cell"><input type="radio" name="q9" value="nao" /></td>
-          <td class="radio-cell"><input type="radio" name="q9" value="sim" /></td>
-          <td><input type="text" id="q9_quais" /></td>
-          <td><input type="text" id="q9_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>10. Algum paciente elegível para a visita multiprofissional ou discussão do time diagnóstico?</td>
-          <td class="radio-cell"><input type="radio" name="q10" value="nao" /></td>
-          <td class="radio-cell"><input type="radio" name="q10" value="sim" /></td>
-          <td><input type="text" id="q10_quais" /></td>
-          <td><input type="text" id="q10_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>11. Outros:</td>
-          <td class="radio-cell"><input type="radio" name="q11" value="nao" /></td>
-          <td class="radio-cell"><input type="radio" name="q11" value="sim" /></td>
-          <td><input type="text" id="q11_quais" /></td>
-          <td><input type="text" id="q11_devolutiva" /></td>
-        </tr>
-      </tbody>
-    </table>
-
-    <br />
-    <button type="submit">Salvar</button>
-  </form>
-
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-
-  <script>
-    const firebaseConfig = {
-      apiKey: "SUA_API_KEY",
-      authDomain: "SEU_AUTH_DOMAIN",
-      databaseURL: "SUA_DATABASE_URL",
-      projectId: "SEU_PROJECT_ID",
-      storageBucket: "SEU_STORAGE_BUCKET",
-      messagingSenderId: "SEU_MESSAGING_SENDER_ID",
-      appId: "SEU_APP_ID"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-
-    const form = document.getElementById("safetyHuddleForm");
-
-    // Função para salvar dados no Firebase
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      const data = {};
-      for(let i=1; i<=11; i++) {
-        data["q"+i] = {
-          resposta: form.elements["q"+i].value || null,
-          quais: form.elements["q"+i+"_quais"].value || "",
-          devolutiva: form.elements["q"+i+"_devolutiva"].value || ""
-        };
-      }
-
-      database.ref('safety-huddle').set(data)
-        .then(() => alert("Dados salvos com sucesso!"))
-        .catch((error) => alert("Erro ao salvar dados: " + error));
-    });
-
-    // Função para carregar dados salvos no Firebase ao abrir a página
-    window.onload = () => {
-      database.ref('safety-huddle').once('value').then(snapshot => {
-        const data = snapshot.val();
-        if(data) {
-          for(let i=1; i<=11; i++) {
-            if(data["q"+i]) {
-              if(data["q"+i].resposta) {
-                const radios = document.getElementsByName("q"+i);
-                radios.forEach(radio => {
-                  if(radio.value === data["q"+i].resposta) {
-                    radio.checked = true;
-                  }
-                });
-              }
-              if(data["q"+i].quais) {
-                form.elements["q"+i+"_quais"].value = data["q"+i].quais;
-              }
-              if(data["q"+i].devolutiva) {
-                form.elements["q"+i+"_devolutiva"].value = data["q"+i].devolutiva;
-              }
-            }
-          }
-        }
-      });
-    };
-  </script>
-</body>
-</html>
+<table>
+  <thead>
+    <tr>
+      <th style="width: 30%">Pergunta</th>
+      <th>Não</th>
+      <th>Sim</th>
+      <th>Quais?</th>
+      <th>Devolutiva do caso para a equipe</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1. Paciente em gerenciamento de risco - farol vermelho ou amarelo?</td>
+      <td><input type="radio" name="q1" value="nao" /></td>
+      <td><input type="radio" name="q1" value="sim" /></td>
+      <td><input type="text" id="q1_quais" /></td>
+      <td><input type="text" id="q1_devolutiva" /></td>
+    </tr>
+    <tr>
+      <td>2. Paciente watcher - seriamente preocupado, críticos ou instáveis?</td>
+      <td><input type="radio" name="q2" value="nao" /></td>
+      <td><input type="radio" name="q2" value="sim" /></td>
+      <td><input type="text" id="q2_quais" /></td>
+      <td><input type="text" id="q2_devolutiva" /></td>
+    </tr>
+    <tr>
+      <td>3. Paciente com alto risco de queda, resistente à orientações e não aderentes às medidas preventivas ou sem acompanhante? Polifarmácia? Farmacêutico ciente?</td>
+      <td><input type="radio" name="q3" value="nao" /></td>
+      <td><input type="radio" name="q3" value="sim" /></td>
+      <td><input type="text" id="q3_quais" /></td>
+      <td><input type="text" id="q3_devolutiva" /></td>
+    </tr>
+    <tr>
+      <td>4. Pacientes com alto risco de LP? Resistente às medidas preventivas?</td>
+      <td><input type="radio" name="q4" value="nao" /></td>
+      <td><input type="radio" name="q4" value="sim" /></td>
+      <td><input type="text" id="q4_quais" /></td>
+      <td><input type="text" id="q4_devolutiva" /></td>
+    </tr>
+    <tr>
+      <td>5. Divergências entre o plano terapêutico?</td>
+      <td><input type="radio" name="q5" value="nao" /></td>
+      <td><input type="radio" name="q5" value="sim" /></td>
+      <td><input type="text" id="q5_quais" /></td>
+      <td><input type="text" id="q5_devolutiva" /></td>
+    </tr>
+    <tr>
+      <td>6. Terapias, procedimentos, protocolos ou dispositivos de alto risco ou não habituais? (LP3 ou acima, Flebite grau 3 ou acima, erro de medicações, quedas, ICS)</td>
+      <td><input type="radio" name="q6" value="nao" /></td>
+      <td><input type="radio" name="q6" value="sim" /></td>
+      <td><input type="text" id="q6_quais" /></td>
+      <td><input type="text" id="q6_devolutiva" /></td>
+    </tr>
+    <tr>
+      <td>7. Houve a ocorrência de procedimentos invasivos não planejados ou situações de emergências?</td>
+      <td><input type="radio" name="q7" value="nao" /></td>
+      <td><input type="radio" name="q7" value="sim" /></td>
+      <td><input type="text" id="q7_quais" /></td>
+      <td><input type="text" id="q7_devolutiva" /></td>
+    </tr>
+    <tr>
+      <td>8. Eventos adversos?</td>
+      <td><input type="radio" name="q8" value="nao" /></td>
+      <td><input type="radio" name="q8" value="sim" /></td>
+      <td><input type="text" id="q8_quais" /></td>
+      <td><input type="text" id="q8_devolutiva" /></td>
+    </tr>
+    <tr>
+      <td>9. Problemas com infraestrutura, Cerner, equipamentos, materiais ou medicamentos?</td>
+      <td><input type="radio" name="q9" value="nao" /></td>
+      <td><input type="radio" name="q9" value="sim" /></td>
+      <td><input type="text" id="q9_quais" /></td>
+      <td><input type="text" id="q9_devolutiva" /></td>
+    </tr>
+    <tr>
+      <td>10. Algum paciente elegível para a visita multiprofissional ou discussão do time diagnóstico?</td>
+      <td><input type="radio" name="q10" value="nao" /></td>
+      <td><input type="radio" name="q10" value="sim" /></td>
+      <td><input type="text" id="q10_quais" /></td>
+      <td><input type="text" id="q10_devolutiva" /></td>
+    </tr>
+    <tr>
+      <td>11. Outros:</td>
+      <td><input type="radio" name="q11" value="nao" /></td>
+      <td><input type="radio" name="q11" value="sim" /></td>
+      <td><input type="text" id="q11_quais" /></td>
+      <td><input type="text" id="q11_devolutiva" /></td>
+    </tr>
+  </tbody>
+</table>
