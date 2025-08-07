@@ -2,186 +2,101 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Safety Huddle Local</title>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 20px;
     }
-
     .container {
-      max-width: 800px;
+      max-width: 1000px;
       margin: auto;
     }
-
-    .top, .checkbox-group, .info, table, .rodape {
-      margin-top: 20px;
-    }
-
-    label {
-      display: block;
-      margin: 5px 0;
-    }
-
-    .checkbox-group label {
-      display: inline-block;
-      margin-right: 15px;
-    }
-
-    table {
-      width: 100%;
+    table, th, td {
+      border: 1px solid black;
       border-collapse: collapse;
-      margin-top: 20px;
     }
-
-    table th, table td {
-      border: 1px solid #ccc;
-      padding: 8px;
+    th, td {
+      padding: 6px;
       text-align: left;
-      vertical-align: top;
     }
-
-    table th {
-      background-color: #f2f2f2;
+    .top input, .info input, table input {
+      margin: 4px;
     }
-
-    input[type="text"], input[type="date"], input[type="time"], input[type="number"] {
-      width: 100%;
-      box-sizing: border-box;
+    .checkbox-group label {
+      margin-right: 10px;
     }
-
-    input[type="radio"] {
-      transform: scale(1.2);
-    }
-
-    button {
-      margin-top: 10px;
-      padding: 8px 16px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
     .rodape {
-      font-size: 12px;
-      margin-top: 30px;
+      margin-top: 20px;
+      font-size: 14px;
     }
   </style>
 </head>
 <body>
-  <div class="container" id="huddle-content">
+  <div class="container" id="formulario">
     <h2>Safety Huddle Local</h2>
-
     <div class="top">
-      <label>Data: <input type="date">
-      Hora: <input type="time"> </label>
-      <label>Tempo Gasto Minutos: <input type="number" min="0" /></label>
-      <button id="btnPdf">Salvar PDF</button>
+      <label>Data: <input type="date" id="data"></label>
+      <label>Hora: <input type="time" id="hora"></label>
+      <label>Tempo Gasto Minutos:<input type="number" min="0" id="tempo"></label>
+      <button onclick="gerarPDF()">Salvar PDF</button>
     </div>
 
     <div class="checkbox-group">
       <strong>Equipe do Huddle:</strong><br>
-      <label><input type="checkbox" /> Enfermeiros</label>
-      <label><input type="checkbox" /> Fisioterapeuta</label>
-      <label><input type="checkbox" /> Nutricionistas</label>
-      <label><input type="checkbox" /> Técnicos</label>
-      <label><input type="checkbox" /> Auxiliares</label>
+      <label><input type="checkbox" id="enf"> Enfermeiros</label>
+      <label><input type="checkbox" id="fisio"> Fisioterapeuta</label>
+      <label><input type="checkbox" id="nutri"> Nutricionistas</label>
+      <label><input type="checkbox" id="tec"> Técnicos</label>
+      <label><input type="checkbox" id="aux"> Auxiliares</label>
     </div>
 
     <div class="info">
-      <label>Número de Leitos Ocupados: <input type="text" /></label>
-      <label>Previsões de Alta: <input type="text" /></label>
-      <label>Leitos interditados: <input type="text" /></label>
+      <label>Número de Leitos Ocupados: <input type="text" id="leitos"></label>
+      <label>Previsões de Alta: <input type="text" id="altas"></label>
+      <label>Leitos interditados: <input type="text" id="interditados"></label>
     </div>
 
-    <table>
+    <table id="tabela">
       <thead>
         <tr>
-          <th style="width: 30%">Pergunta</th>
+          <th>Pergunta</th>
           <th>Não</th>
           <th>Sim</th>
           <th>Quais?</th>
-          <th>Devolutiva do caso para a equipe</th>
+          <th>Devolutiva</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>1. Paciente com gerenciamento de risco (farol amarelo ou vermelho)?</td>
-          <td><input type="radio" name="q1" /></td>
-          <td><input type="radio" name="q1" /></td>
-          <td><input type="text" /></td>
-          <td><input type="text" /></td>
-        </tr>
-        <tr>
-          <td>2. Paciente “Whatcher” (seriamente preocupado, críticos ou instáveis?)</td>
-          <td><input type="radio" name="q2" /></td>
-          <td><input type="radio" name="q2" /></td>
-          <td><input type="text" /></td>
-          <td><input type="text" /></td>
-        </tr>
-        <tr>
-          <td>3. Pacientes com alto risco de queda, resistentes às orientações e não aderente às medidas preventivas ou sem acompanhante?</td>
-          <td><input type="radio" name="q3" /></td>
-          <td><input type="radio" name="q3" /></td>
-          <td><input type="text" /></td>
-          <td><input type="text" /></td>
-        </tr>
-        <tr>
-          <td>4. Pacientes com alto risco LP? Resistente às medidas preventivas?</td>
-          <td><input type="radio" name="q4" /></td>
-          <td><input type="radio" name="q4" /></td>
-          <td><input type="text" /></td>
-          <td><input type="text" /></td>
-        </tr>
-        <tr>
-          <td>5. Divergências entre o plano terapêutico?</td>
-          <td><input type="radio" name="q5" /></td>
-          <td><input type="radio" name="q5" /></td>
-          <td><input type="text" /></td>
-          <td><input type="text" /></td>
-        </tr>
-        <tr>
-          <td>6. Terapias, procedimentos, protocolos ou dispositivos de alto risco ou não habituais?</td>
-          <td><input type="radio" name="q6" /></td>
-          <td><input type="radio" name="q6" /></td>
-          <td><input type="text" /></td>
-          <td><input type="text" /></td>
-        </tr>
-        <tr>
-          <td>7. Houve a ocorrência de procedimentos invasivos não planejados ou situações de emergências?</td>
-          <td><input type="radio" name="q7" /></td>
-          <td><input type="radio" name="q7" /></td>
-          <td><input type="text" /></td>
-          <td><input type="text" /></td>
-        </tr>
-        <tr>
-          <td>8. Eventos Adversos?</td>
-          <td><input type="radio" name="q8" /></td>
-          <td><input type="radio" name="q8" /></td>
-          <td><input type="text" /></td>
-          <td><input type="text" /></td>
-        </tr>
-        <tr>
-          <td>9. Problemas com infraestrutura, Cerner, equipamentos, materiais ou medicamentos?</td>
-          <td><input type="radio" name="q9" /></td>
-          <td><input type="radio" name="q9" /></td>
-          <td><input type="text" /></td>
-          <td><input type="text" /></td>
-        </tr>
-        <tr>
-          <td>10. Algum paciente elegível para a visita multiprofissional ou discussão do time diagnóstico?</td>
-          <td><input type="radio" name="q10" /></td>
-          <td><input type="radio" name="q10" /></td>
-          <td><input type="text" /></td>
-          <td><input type="text" /></td>
-        </tr>
-        <tr>
-          <td>11. Outros:</td>
-          <td><input type="radio" name="q11" /></td>
-          <td><input type="radio" name="q11" /></td>
-          <td><input type="text" /></td>
-          <td><input type="text" /></td>
-        </tr>
+        <!-- 11 perguntas -->
+        <script>
+          const perguntas = [
+            "1. Paciente com gerenciamento de risco (farol amarelo ou vermelho)?",
+            "2. Paciente 'Whatcher' (seriamente preocupado, críticos ou instáveis?)",
+            "3. Pacientes com alto risco de queda?",
+            "4. Pacientes com alto risco LP?",
+            "5. Divergências entre o plano terapêutico?",
+            "6. Terapias, procedimentos ou dispositivos de alto risco?",
+            "7. Procedimentos invasivos não planejados?",
+            "8. Eventos Adversos?",
+            "9. Problemas com infraestrutura, Cerner, equipamentos?",
+            "10. Paciente elegível para visita multiprofissional?",
+            "11. Outros:"
+          ];
+          document.write(perguntas.map((pergunta, i) => `
+            <tr>
+              <td>${pergunta}</td>
+              <td><input type="radio" name="q${i}" value="nao"></td>
+              <td><input type="radio" name="q${i}" value="sim"></td>
+              <td><input type="text" id="q${i}_quais"></td>
+              <td><input type="text" id="q${i}_dev"></td>
+            </tr>
+          `).join(''));
+        </script>
       </tbody>
     </table>
 
@@ -190,22 +105,78 @@
     </p>
   </div>
 
-  <!-- html2pdf.js CDN -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script>
-    document.getElementById("btnPdf").addEventListener("click", () => {
-      const element = document.getElementById("huddle-content");
+    // 🔧 Substitua com as suas chaves do Firebase
+    const firebaseConfig = {
+      apiKey: "SUA_API_KEY",
+      authDomain: "SEU_PROJETO.firebaseapp.com",
+      databaseURL: "https://SEU_PROJETO.firebaseio.com",
+      projectId: "SEU_PROJETO",
+      storageBucket: "SEU_PROJETO.appspot.com",
+      messagingSenderId: "SENDER_ID",
+      appId: "APP_ID"
+    };
 
-      const opt = {
-        margin:       0.5,
-        filename:     'safety-huddle.pdf',
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2 },
-        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
-      };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-      html2pdf().set(opt).from(element).save();
+    const campos = [
+      "data", "hora", "tempo", "leitos", "altas", "interditados",
+      "enf", "fisio", "nutri", "tec", "aux"
+    ];
+
+    campos.forEach(id => {
+      const el = document.getElementById(id);
+      el.addEventListener("change", () => {
+        const val = el.type === "checkbox" ? el.checked : el.value;
+        db.ref("form/" + id).set(val);
+      });
+      db.ref("form/" + id).on("value", snap => {
+        if (snap.exists()) {
+          if (el.type === "checkbox") el.checked = snap.val();
+          else el.value = snap.val();
+        }
+      });
     });
+
+    for (let i = 0; i < 11; i++) {
+      ["q" + i + "_quais", "q" + i + "_dev"].forEach(id => {
+        const el = document.getElementById(id);
+        el.addEventListener("input", () => {
+          db.ref("form/" + id).set(el.value);
+        });
+        db.ref("form/" + id).on("value", snap => {
+          if (snap.exists()) el.value = snap.val();
+        });
+      });
+
+      const radios = document.getElementsByName("q" + i);
+      radios.forEach(radio => {
+        radio.addEventListener("change", () => {
+          if (radio.checked) {
+            db.ref("form/q" + i + "_radio").set(radio.value);
+          }
+        });
+      });
+
+      db.ref("form/q" + i + "_radio").on("value", snap => {
+        if (snap.exists()) {
+          radios.forEach(r => r.checked = (r.value === snap.val()));
+        }
+      });
+    }
+
+    function gerarPDF() {
+      const element = document.getElementById("formulario");
+      const opt = {
+        margin: 0.5,
+        filename: 'safety-huddle.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'cm', format: 'a4', orientation: 'portrait' }
+      };
+      html2pdf().set(opt).from(element).save();
+    }
   </script>
 </body>
 </html>
