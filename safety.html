@@ -1,52 +1,45 @@
-document.addEventListener("DOMContentLoaded", () => {
-  // Função que salva todos os inputs e radios da tabela no localStorage
-  function saveData() {
-    const tbody = document.querySelector("table tbody");
-    const data = [];
-    tbody.querySelectorAll("tr").forEach((tr, index) => {
-      const cells = tr.querySelectorAll("td");
-      const radiosNao = cells[1].querySelector("input[type=radio]");
-      const radiosSim = cells[2].querySelector("input[type=radio]");
-      const quais = cells[3].querySelector("input").value;
-      const devolutiva = cells[4].querySelector("input").value;
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Safety Huddle</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+</head>
+<body>
+  <h1>Safety Huddle Local</h1>
+  <input id="data" placeholder="Data" />
+  <input id="hora" placeholder="Hora" />
+  <input id="tempo" placeholder="Tempo" />
 
-      data[index] = {
-        naoChecked: radiosNao.checked,
-        simChecked: radiosSim.checked,
-        quais,
-        devolutiva
-      };
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBLmbarQp31Sqs0_VsYdE-OWdUlYO4WT7M",
+      authDomain: "safety-leste.firebaseapp.com",
+      databaseURL: "https://safety-leste-default-rtdb.firebaseio.com",
+      projectId: "safety-leste",
+      storageBucket: "safety-leste.appspot.com",
+      messagingSenderId: "922824064168",
+      appId: "1:922824064168:web:d89c1c2fc24860b2cbd69d"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const ref = db.ref("safety-huddle");
+
+    ["data", "hora", "tempo"].forEach(id => {
+      const el = document.getElementById(id);
+      el.addEventListener("input", () => {
+        ref.child(id).set(el.value);
+      });
     });
-    localStorage.setItem("safetyHuddleData", JSON.stringify(data));
-  }
 
-  // Função que carrega os dados do localStorage e preenche a tabela
-  function loadData() {
-    const dataStr = localStorage.getItem("safetyHuddleData");
-    if (!dataStr) return;
-    const data = JSON.parse(dataStr);
-    const tbody = document.querySelector("table tbody");
-    tbody.querySelectorAll("tr").forEach((tr, index) => {
-      const cells = tr.querySelectorAll("td");
-      if (!data[index]) return;
-      const radiosNao = cells[1].querySelector("input[type=radio]");
-      const radiosSim = cells[2].querySelector("input[type=radio]");
-      const quais = cells[3].querySelector("input");
-      const devolutiva = cells[4].querySelector("input");
-
-      radiosNao.checked = data[index].naoChecked;
-      radiosSim.checked = data[index].simChecked;
-      quais.value = data[index].quais;
-      devolutiva.value = data[index].devolutiva;
+    ref.on("value", snap => {
+      const data = snap.val();
+      if (!data) return;
+      ["data", "hora", "tempo"].forEach(id => {
+        if (data[id]) document.getElementById(id).value = data[id];
+      });
     });
-  }
-
-  // Chamar loadData no carregamento da página
-  loadData();
-
-  // Adicionar listeners para salvar ao alterar qualquer input ou radio da tabela
-  const tbody = document.querySelector("table tbody");
-  tbody.querySelectorAll("input").forEach(input => {
-    input.addEventListener("change", saveData);
-  });
-}); 
+  </script>
+</body>
+</html>
