@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Safety Huddle Local</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .container { max-width: 900px; margin: auto; }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ddd; padding: 8px; vertical-align: top; }
+    th { background: #f2f2f2; }
+    label { display: inline-block; margin: 5px 10px 10px 0; }
+    input[type="text"], input[type="number"], input[type="date"], input[type="time"] {
+      width: 150px;
+    }
+    .checkbox-group label { margin-right: 15px; }
+    .rodape { margin-top: 30px; font-size: 0.85em; color: #555; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Safety Huddle Local</h2>
+    <div>
+      <label>Data: <input type="date" id="data" /></label>
+      <label>Hora: <input type="time" id="hora" /></label>
+      <label>Tempo Gasto (min): <input type="number" id="tempo" /></label>
+    </div>
+
+    <div class="checkbox-group">
+      <strong>Equipe do Huddle:</strong><br />
+      <label><input type="checkbox" id="enfermeiros" /> Enfermeiros</label>
+      <label><input type="checkbox" id="fisioterapeuta" /> Fisioterapeuta</label>
+      <label><input type="checkbox" id="nutricionistas" /> Nutricionistas</label>
+      <label><input type="checkbox" id="tecnicos" /> Técnicos</label>
+      <label><input type="checkbox" id="auxiliares" /> Auxiliares</label>
+    </div>
+
+    <div>
+      <label>Leitos Ocupados: <input type="text" id="leitos" /></label>
+      <label>Previsões de Alta: <input type="text" id="previsoes" /></label>
+      <label>Leitos Interditados: <input type="text" id="interditados" /></label>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Pergunta</th>
+          <th>Não</th>
+          <th>Sim</th>
+          <th>Quais?</th>
+          <th>Devolutiva</th>
+        </tr>
+      </thead>
+      <tbody id="tabela-perguntas"></tbody>
+    </table>
+
+    <p class="rodape">
+      *Fluxo de Escalonamento: Horário comercial comunicar sênior e Coordenador. Período noturno comunicar sênior e/ou supervisor administrativo. Nos finais de semana comunicar coordenador da área, não conseguindo contato acionar direto supervisor administrativo.
+    </p>
+  </div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBLmbarQp31Sqs0_VsYdE-OWdUlYO4WT7M",
+      authDomain: "safety-leste.firebaseapp.com",
+      databaseURL: "https://safety-leste-default-rtdb.firebaseio.com",
+      projectId: "safety-leste",
+      storageBucket: "safety-leste.appspot.com",
+      messagingSenderId: "922824064168",
+      appId: "1:922824064168:web:d89c1c2fc24860b2cbd69d",
+      measurementId: "G-G59DD5DB64"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const ref = db.ref("safety-huddle");
+
+    const campos = ['data', 'hora', 'tempo', 'leitos', 'previsoes', 'interditados'];
+    const checkboxes = ['enfermeiros', 'fisioterapeuta', 'nutricionistas', 'tecnicos', 'auxiliares'];
+
+    // Gera perguntas dinamicamente
+    const tbody = document.getElementById("tabela-perguntas");
+    for (let i = 1; i <= 11; i++) {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${i}. Pergunta ${i}?</td>
+        <td><input type="radio" name="q${i}" value="nao"></td>
+        <td><input type="radio" name="q${i}" value="sim"></td>
+        <td><input type="text" id="q${i}_quais"></td>
+        <td><input type="text" id="q${i}_devolutiva"></td>
+      `;
+      tbody.appendChild(tr);
+    }
+
+    function atualizarCampos(data) {
+      if (!data) return;
+
+      campos.forEach(id => {
+        if (data[id]) document.getElementById(id).value = data[id];
+      });
+
+      checkboxes.forEach(id => {
+        if (data[id] !== undefined) document.getElementById(id).checked = data[id];
+      });
+
+      for (let i = 1; i <= 11; i++) {
+        if (data[`q${i}`]) {
+          document.querySelectorAll(`input[name="q${i}"]`).forEach(el => {
+            el.checked = (el.value === data[`q${i}`]);
+          });
+        }
+        if (data[`q${i}_quais`]) {
+          document.getElementById(`q${i}_quais`).value = data[`q${i}_quais`];
+        }
+        if (data[`q${i}_devolutiva`]) {
+          document.getElementById(`q${i}_devolutiva`).value = data[`q${i}_devolutiva`];
+        }
+      }
+    }
+
+    ref.on("value", snapshot => {
+      atualizarCampos(snapshot.val());
+    });
+
+    function salvar(id, valor) {
+      ref.child(id).set(valor);
+    }
+
+    campos.forEach(id => {
+      document.getElementById(id).addEventListener("input", e => {
+        salvar(id, e.target.value);
+      });
+    });
+
+    checkboxes.forEach(id => {
+      document.getElementById(id).addEventListener("change", e => {
+        salvar(id, e.target.checked);
+      });
+    });
+
+    for (let i = 1; i <= 11; i++) {
+      document.querySelectorAll(`input[name="q${i}"]`).forEach(el => {
+        el.addEventListener("change", e => {
+          if (e.target.checked) salvar(`q${i}`, e.target.value);
+        });
+      });
+
+      document.getElementById(`q${i}_quais`).addEventListener("input", e => {
+        salvar(`q${i}_quais`, e.target.value);
+      });
+
+      document.getElementById(`q${i}_devolutiva`).addEventListener("input", e => {
+        salvar(`q${i}_devolutiva`, e.target.value);
+      });
+    }
+  </script>
+</body>
+</html>
