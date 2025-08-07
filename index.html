@@ -1,185 +1,45 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Safety Huddle Local</title>
-
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-  }
-  .container {
-    max-width: 1200px;
-    margin: auto;
-  }
-  h2 {
-    text-align: center;
-  }
-  .top label {
-    margin-right: 20px;
-  }
-  .checkbox-group label {
-    margin-right: 15px;
-  }
-  .info label {
-    display: inline-block;
-    margin-right: 15px;
-    margin-top: 10px;
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
-    table-layout: fixed;
-  }
-  table, th, td {
-    border: 1px solid #444;
-  }
-  th, td {
-    padding: 6px 8px;
-    text-align: left;
-    word-wrap: break-word;
-  }
-  th {
-    background: #eee;
-  }
-  td input[type="text"], td input[type="number"] {
-    width: 95%;
-    box-sizing: border-box;
-  }
-  td input[type="radio"] {
-    margin: 0 auto;
-    display: block;
-  }
-  .rodape {
-    margin-top: 20px;
-    font-size: 0.85em;
-    color: #333;
-    text-align: justify;
-  }
-  button {
-    margin-top: 15px;
-    padding: 8px 16px;
-    font-size: 1em;
-  }
-</style>
-
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-
-<!-- jsPDF and html2canvas for PDF generation -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
+  <meta charset="UTF-8" />
+  <title>Safety Huddle</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 </head>
 <body>
+  <h1>Safety Huddle Local</h1>
+  <input id="data" placeholder="Data" />
+  <input id="hora" placeholder="Hora" />
+  <input id="tempo" placeholder="Tempo" />
 
-<div class="container">
-  <h2>Safety Huddle Local</h2>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBLmbarQp31Sqs0_VsYdE-OWdUlYO4WT7M",
+      authDomain: "safety-leste.firebaseapp.com",
+      databaseURL: "https://safety-leste-default-rtdb.firebaseio.com",
+      projectId: "safety-leste",
+      storageBucket: "safety-leste.appspot.com",
+      messagingSenderId: "922824064168",
+      appId: "1:922824064168:web:d89c1c2fc24860b2cbd69d"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const ref = db.ref("safety-huddle");
 
-  <div class="top">
-    <label>Data: <input type="date" id="data"/></label>
-    <label>Tempo Gasto: <input type="number" id="tempo" min="0" /> min</label>
-  </div>
+    ["data", "hora", "tempo"].forEach(id => {
+      const el = document.getElementById(id);
+      el.addEventListener("input", () => {
+        ref.child(id).set(el.value);
+      });
+    });
 
-  <div class="checkbox-group" id="equipeHuddle">
-    <strong>Equipe do Huddle:</strong><br>
-    <label><input type="checkbox" id="enfermeiros" /> Enfermeiros</label>
-    <label><input type="checkbox" id="fisioterapeuta" /> Fisioterapeuta</label>
-    <label><input type="checkbox" id="nutricionistas" /> Nutricionistas</label>
-    <label><input type="checkbox" id="tecnicos" /> Técnicos</label>
-    <label><input type="checkbox" id="auxiliares" /> Auxiliares</label>
-  </div>
-
-  <div class="info">
-    <label>Número de Leitos Ocupados: <input type="text" id="leitosOcupados"/></label>
-    <label>Previsões de Alta: <input type="text" id="previsoesAlta"/></label>
-    <label>Leitos interditados: <input type="text" id="leitosInterditados"/></label>
-    <label>Contingência/leitos extras: <input type="text" id="contingencia"/></label>
-  </div>
-
-  <table id="tablePerguntas" >
-    <thead>
-      <tr>
-        <th style="width: 30%">Pergunta</th>
-        <th style="width: 6%; text-align:center">Não</th>
-        <th style="width: 6%; text-align:center">Sim</th>
-        <th style="width: 32%;">Quais?</th>
-        <th style="width: 26%;">Devolutiva do caso para a equipe</th>
-      </tr>
-    </thead>
-    <tbody>
-
-      <tr>
-        <td>1. Paciente com gerenciamento de risco (farol amarelo ou vermelho)?</td>
-        <td style="text-align:center"><input type="radio" name="q1" value="nao" /></td>
-        <td style="text-align:center"><input type="radio" name="q1" value="sim" /></td>
-        <td><input type="text" name="q1_quais" /></td>
-        <td><input type="text" name="q1_devolutiva" /></td>
-      </tr>
-
-      <tr>
-        <td>2. Paciente “Watcher” (seriamente preocupado, críticos ou instáveis?)</td>
-        <td style="text-align:center"><input type="radio" name="q2" value="nao" /></td>
-        <td style="text-align:center"><input type="radio" name="q2" value="sim" /></td>
-        <td><input type="text" name="q2_quais" /></td>
-        <td><input type="text" name="q2_devolutiva" /></td>
-      </tr>
-
-      <tr>
-        <td>3. Pacientes com alto risco de queda, resistentes às orientações e não aderente às medidas preventivas ou sem acompanhante? Polifarmáica? Farmacêutico ciente?</td>
-        <td style="text-align:center"><input type="radio" name="q3" value="nao" /></td>
-        <td style="text-align:center"><input type="radio" name="q3" value="sim" /></td>
-        <td><input type="text" name="q3_quais" /></td>
-        <td><input type="text" name="q3_devolutiva" /></td>
-      </tr>
-
-      <tr>
-        <td>4. Pacientes com alto risco LP? Resistente às medidas preventivas?</td>
-        <td style="text-align:center"><input type="radio" name="q4" value="nao" /></td>
-        <td style="text-align:center"><input type="radio" name="q4" value="sim" /></td>
-        <td><input type="text" name="q4_quais" /></td>
-        <td><input type="text" name="q4_devolutiva" /></td>
-      </tr>
-
-      <tr>
-        <td>5. Divergências entre o plano terapêutico?</td>
-        <td style="text-align:center"><input type="radio" name="q5" value="nao" /></td>
-        <td style="text-align:center"><input type="radio" name="q5" value="sim" /></td>
-        <td><input type="text" name="q5_quais" /></td>
-        <td><input type="text" name="q5_devolutiva" /></td>
-      </tr>
-
-      <tr>
-        <td>6. Terapias, procedimentos, protocolos ou dispositivos de alto risco ou não habituais?<br>
-            (LP3 ou acima, Flebite grau 3 ou acima, erro de medicações, Quedas, ICS)
-        </td>
-        <td style="text-align:center"><input type="radio" name="q6" value="nao" /></td>
-        <td style="text-align:center"><input type="radio" name="q6" value="sim" /></td>
-        <td><input type="text" name="q6_quais" /></td>
-        <td><input type="text" name="q6_devolutiva" /></td>
-      </tr>
-
-      <tr>
-        <td>7. Houve a ocorrência de procedimentos invasivos não planejados ou situações de emergências?</td>
-        <td style="text-align:center"><input type="radio" name="q7" value="nao" /></td>
-        <td style="text-align:center"><input type="radio" name="q7" value="sim" /></td>
-        <td><input type="text" name="q7_quais" /></td>
-        <td><input type="text" name="q7_devolutiva" /></td>
-      </tr>
-
-      <tr>
-        <td>8. Eventos Adversos?</td>
-        <td style="text-align:center"><input type="radio" name="q8" value="nao" /></td>
-        <td style="text-align:center"><input type="radio" name="q8" value="sim" /></td>
-        <td><input type="text" name="q8_quais" /></td>
-        <td><input type="text" name="q8_devolutiva" /></td>
-      </tr>
-
-      <tr>
-        <td>9. Problemas com infraestrutura, Cerner, equipamentos, materiais ou medicamentos?</td>
-        <td style="text-align:center"><input type="radio" name="q9" value="nao" /></td>
-        <td style="text-align:center"><input type="radio
+    ref.on("value", snap => {
+      const data = snap.val();
+      if (!data) return;
+      ["data", "hora", "tempo"].forEach(id => {
+        if (data[id]) document.getElementById(id).value = data[id];
+      });
+    });
+  </script>
+</body>
+</html>
