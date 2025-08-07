@@ -2,172 +2,157 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Safety Huddle Local - PDF Exato</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Safety Huddle Local</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; background: #fff; }
-    table { border-collapse: collapse; width: 100%; background: #fff; }
-    th, td { border: 1px solid #000; padding: 8px; font-size: 12px; }
-    th { background: #004080; color: #fff; }
-    input[type=text], input[type=date], input[type=number] { width: 100%; font-size: 12px; box-sizing: border-box; }
-    button { margin-top: 15px; padding: 10px 20px; cursor: pointer; background: #004080; color: white; border: none; font-size: 14px; }
-    label { font-size: 14px; display: block; margin-top: 10px; }
-    .checkbox-group label { display: inline-block; margin-right: 15px; font-size: 13px; }
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .container { max-width: 1000px; margin: auto; }
+    h2 { text-align: center; margin-bottom: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+    th, td { border: 1px solid #000; padding: 6px; font-size: 14px; }
+    th { background-color: #ddd; }
+    input[type="text"], input[type="number"], input[type="date"] {
+      width: 95%;
+      box-sizing: border-box;
+      padding: 4px;
+      font-size: 14px;
+    }
+    input[type="radio"] {
+      transform: scale(1.2);
+      margin: 0 6px;
+    }
+    .top label {
+      margin-right: 15px;
+      font-weight: bold;
+    }
+    .checkbox-group label {
+      margin-right: 15px;
+      font-weight: normal;
+    }
+    .rodape {
+      font-size: 12px;
+      font-style: italic;
+      margin-top: 15px;
+      border-top: 1px solid #ccc;
+      padding-top: 10px;
+    }
+    button {
+      padding: 10px 15px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
   </style>
 </head>
 <body>
+  <div class="container">
+    <h2>Safety Huddle Local</h2>
+    <div class="top">
+      <label>Data: <input type="date" id="data" /></label>
+      <label>Tempo Gasto: <input type="number" min="0" id="tempo" /> min</label>
+    </div>
 
-<h2>Safety Huddle Local</h2>
+    <div class="checkbox-group" style="margin: 10px 0;">
+      <strong>Equipe do Huddle:</strong><br />
+      <label><input type="checkbox" id="equipe_enfermeiros" /> Enfermeiros</label>
+      <label><input type="checkbox" id="equipe_fisioterapeuta" /> Fisioterapeuta</label>
+      <label><input type="checkbox" id="equipe_nutricionistas" /> Nutricionistas</label>
+      <label><input type="checkbox" id="equipe_tecnicos" /> Técnicos</label>
+      <label><input type="checkbox" id="equipe_auxiliares" /> Auxiliares</label>
+    </div>
 
-<label>Data: <input type="date" id="date" /></label>
-<label>Tempo Gasto (min): <input type="number" id="timeSpent" min="0" /></label>
+    <div class="info" style="margin-bottom: 20px;">
+      <label>Número de Leitos Ocupados: <input type="text" id="leitos_ocupados" /></label>
+      <label>Previsões de Alta: <input type="text" id="previsoes_alta" /></label>
+      <label>Leitos interditados: <input type="text" id="leitos_interditados" /></label>
+      <label>Contingência/leitos extras: <input type="text" id="contingencia_leitos" /></label>
+    </div>
 
-<div class="checkbox-group">
-  <h3>Equipe do Huddle:</h3>
-  <label><input type="checkbox" class="team" value="Enfermeiros" /> Enfermeiros</label>
-  <label><input type="checkbox" class="team" value="Fisioterapeuta" /> Fisioterapeuta</label>
-  <label><input type="checkbox" class="team" value="Nutricionistas" /> Nutricionistas</label>
-  <label><input type="checkbox" class="team" value="Técnicos" /> Técnicos</label>
-  <label><input type="checkbox" class="team" value="Auxiliares" /> Auxiliares</label>
-</div>
-
-<p>
-  <label>Número de Leitos Ocupados: <input type="text" id="leitosOcupados" /></label>
-  <label>Previsões de Alta: <input type="text" id="previsoesAlta" /></label>
-  <label>Leitos interditados: <input type="text" id="leitosInterditados" /></label>
-  <label>Contingência / leitos extras: <input type="text" id="contingencia" /></label>
-</p>
-
-<table id="safetyTable">
-  <thead>
-    <tr>
-      <th>Pergunta</th><th>Não</th><th>Sim</th><th>Quais?</th><th>Devolutiva do caso para a equipe</th>
-    </tr>
-  </thead>
-  <tbody>
-    <!-- Linhas das perguntas -->
-    <tr>
-      <td>1. Paciente com gerenciamento de risco (farol amarelo ou vermelho)?</td>
-      <td><input type="radio" name="q1" value="Não"></td>
-      <td><input type="radio" name="q1" value="Sim"></td>
-      <td><input type="text" name="q1_quais"></td>
-      <td><input type="text" name="q1_devolutiva"></td>
-    </tr>
-    <tr>
-      <td>2. Paciente “Whatcher” (seriamente preocupado, críticos ou instáveis?)</td>
-      <td><input type="radio" name="q2" value="Não"></td>
-      <td><input type="radio" name="q2" value="Sim"></td>
-      <td><input type="text" name="q2_quais"></td>
-      <td><input type="text" name="q2_devolutiva"></td>
-    </tr>
-    <tr>
-      <td>3. Pacientes com alto risco de queda, resistentes às orientações e não aderente às medidas preventivas ou sem acompanhante?</td>
-      <td><input type="radio" name="q3" value="Não"></td>
-      <td><input type="radio" name="q3" value="Sim"></td>
-      <td><input type="text" name="q3_quais"></td>
-      <td><input type="text" name="q3_devolutiva"></td>
-    </tr>
-    <tr>
-      <td>4. Pacientes com alto risco LP? Resistente às medidas preventivas?</td>
-      <td><input type="radio" name="q4" value="Não"></td>
-      <td><input type="radio" name="q4" value="Sim"></td>
-      <td><input type="text" name="q4_quais"></td>
-      <td><input type="text" name="q4_devolutiva"></td>
-    </tr>
-    <tr>
-      <td>5. Divergências entre o plano terapêutico?</td>
-      <td><input type="radio" name="q5" value="Não"></td>
-      <td><input type="radio" name="q5" value="Sim"></td>
-      <td><input type="text" name="q5_quais"></td>
-      <td><input type="text" name="q5_devolutiva"></td>
-    </tr>
-    <tr>
-      <td>6. Terapias, procedimentos, protocolos ou dispositivos de alto risco ou não habituais?</td>
-      <td><input type="radio" name="q6" value="Não"></td>
-      <td><input type="radio" name="q6" value="Sim"></td>
-      <td><input type="text" name="q6_quais"></td>
-      <td><input type="text" name="q6_devolutiva"></td>
-    </tr>
-    <tr>
-      <td>7. Houve a ocorrência de procedimentos invasivos não planejados ou situações de emergências?</td>
-      <td><input type="radio" name="q7" value="Não"></td>
-      <td><input type="radio" name="q7" value="Sim"></td>
-      <td><input type="text" name="q7_quais"></td>
-      <td><input type="text" name="q7_devolutiva"></td>
-    </tr>
-    <tr>
-      <td>8. Eventos Adversos?</td>
-      <td><input type="radio" name="q8" value="Não"></td>
-      <td><input type="radio" name="q8" value="Sim"></td>
-      <td><input type="text" name="q8_quais"></td>
-      <td><input type="text" name="q8_devolutiva"></td>
-    </tr>
-    <tr>
-      <td>9. Problemas com infraestrutura, Cerner, equipamentos, materiais ou medicamentos?</td>
-      <td><input type="radio" name="q9" value="Não"></td>
-      <td><input type="radio" name="q9" value="Sim"></td>
-      <td><input type="text" name="q9_quais"></td>
-      <td><input type="text" name="q9_devolutiva"></td>
-    </tr>
-    <tr>
-      <td>10. Algum paciente elegível para a visita multiprofissional ou discussão do time diagnóstico?</td>
-      <td><input type="radio" name="q10" value="Não"></td>
-      <td><input type="radio" name="q10" value="Sim"></td>
-      <td><input type="text" name="q10_quais"></td>
-      <td><input type="text" name="q10_devolutiva"></td>
-    </tr>
-    <tr>
-      <td>11. Outros:</td>
-      <td><input type="radio" name="q11" value="Não"></td>
-      <td><input type="radio" name="q11" value="Sim"></td>
-      <td><input type="text" name="q11_quais"></td>
-      <td><input type="text" name="q11_devolutiva"></td>
-    </tr>
-  </tbody>
-</table>
-
-<button id="saveBtn">Salvar Dados</button>
-<button id="loadBtn">Carregar Dados</button>
-<button id="generatePdfBtn">Gerar PDF (tabela exata)</button>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
-<script>
-  // Salvar e carregar dados do localStorage (igual antes)
-  function saveData() {
-    const data = {};
-    data.date = document.getElementById('date').value;
-    data.timeSpent = document.getElementById('timeSpent').value;
-    data.leitosOcupados = document.getElementById('leitosOcupados').value;
-    data.previsoesAlta = document.getElementById('previsoesAlta').value;
-    data.leitosInterditados = document.getElementById('leitosInterditados').value;
-    data.contingencia = document.getElementById('contingencia').value;
-
-    const teams = Array.from(document.querySelectorAll('.team'));
-    data.team = teams.filter(t => t.checked).map(t => t.value);
-
-    data.questions = {};
-    for (let i=1; i<=11; i++) {
-      const qKey = 'q' + i;
-      const radios = document.getElementsByName(qKey);
-      let selected = null;
-      for (const r of radios) if (r.checked) selected = r.value;
-      data.questions[qKey] = {
-        answer: selected,
-        quais: document.querySelector(`input[name="${qKey}_quais"]`).value,
-        devolutiva: document.querySelector(`input[name="${qKey}_devolutiva"]`).value
-      };
-    }
-
-    localStorage.setItem('safetyHuddleData', JSON.stringify(data));
-    alert('Dados salvos localmente!');
-  }
-
-  function loadData() {
-    const saved = localStorage.getItem('safetyHuddleData');
-    if (!saved) return;
-    const data = JSON.parse(saved);
-    document.getElementById('date').value = data.date || '';
-    document.getElementById('timeSpent').value = data.timeSpent || '';
-    document.getElementById('leitosOcupados').value = data.leitosOcupados || '';
-   
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 30%">Pergunta</th>
+          <th>Não</th>
+          <th>Sim</th>
+          <th>Quais?</th>
+          <th>Devolutiva do caso para a equipe</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1. Paciente com gerenciamento de risco (farol amarelo ou vermelho)?</td>
+          <td><input type="radio" name="q1" value="nao" /></td>
+          <td><input type="radio" name="q1" value="sim" /></td>
+          <td><input type="text" id="q1_quais" /></td>
+          <td><input type="text" id="q1_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>2. Paciente “Watcher” (seriamente preocupado, críticos ou instáveis?)</td>
+          <td><input type="radio" name="q2" value="nao" /></td>
+          <td><input type="radio" name="q2" value="sim" /></td>
+          <td><input type="text" id="q2_quais" /></td>
+          <td><input type="text" id="q2_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>3. Pacientes com alto risco de queda, resistentes às orientações e não aderente às medidas preventivas ou sem acompanhante?</td>
+          <td><input type="radio" name="q3" value="nao" /></td>
+          <td><input type="radio" name="q3" value="sim" /></td>
+          <td><input type="text" id="q3_quais" /></td>
+          <td><input type="text" id="q3_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>4. Pacientes com alto risco LP? Resistente às medidas preventivas?</td>
+          <td><input type="radio" name="q4" value="nao" /></td>
+          <td><input type="radio" name="q4" value="sim" /></td>
+          <td><input type="text" id="q4_quais" /></td>
+          <td><input type="text" id="q4_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>5. Divergências entre o plano terapêutico?</td>
+          <td><input type="radio" name="q5" value="nao" /></td>
+          <td><input type="radio" name="q5" value="sim" /></td>
+          <td><input type="text" id="q5_quais" /></td>
+          <td><input type="text" id="q5_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>6. Terapias, procedimentos, protocolos ou dispositivos de alto risco ou não habituais?</td>
+          <td><input type="radio" name="q6" value="nao" /></td>
+          <td><input type="radio" name="q6" value="sim" /></td>
+          <td><input type="text" id="q6_quais" /></td>
+          <td><input type="text" id="q6_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>7. Houve a ocorrência de procedimentos invasivos não planejados ou situações de emergências?</td>
+          <td><input type="radio" name="q7" value="nao" /></td>
+          <td><input type="radio" name="q7" value="sim" /></td>
+          <td><input type="text" id="q7_quais" /></td>
+          <td><input type="text" id="q7_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>8. Eventos Adversos?</td>
+          <td><input type="radio" name="q8" value="nao" /></td>
+          <td><input type="radio" name="q8" value="sim" /></td>
+          <td><input type="text" id="q8_quais" /></td>
+          <td><input type="text" id="q8_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>9. Problemas com infraestrutura, Cerner, equipamentos, materiais ou medicamentos?</td>
+          <td><input type="radio" name="q9" value="nao" /></td>
+          <td><input type="radio" name="q9" value="sim" /></td>
+          <td><input type="text" id="q9_quais" /></td>
+          <td><input type="text" id="q9_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>10. Algum paciente elegível para a visita multiprofissional ou discussão do time diagnóstico?</td>
+          <td><input type="radio" name="q10" value="nao" /></td>
+          <td><input type="radio" name="q10" value="sim" /></td>
+          <td><input type="text" id="q10_quais" /></td>
+          <td><input type="text" id="q10_devolutiva" /></td>
+        </tr>
+        <tr>
+          <td>11. Outros:</td>
+          <td><input type="radio" name="q11" value="nao" /></td>
+          <td><input type="radio" name="q11" value="sim" /></td>
+          <td><input type="text" id="q11_quais" /></td>
+          <td><input type="text" id="q11_devolutiva" /></td>
+        </tr>
