@@ -1,20 +1,18 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<title>Teste Salvamento Automático Firebase</title>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <meta charset="UTF-8" />
+  <title>Safety Huddle</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 </head>
 <body>
-  <h1>Teste Salvamento Automático Firebase</h1>
-
-  <label>Data: <input type="date" id="data" /></label><br />
-  <label>Hora: <input type="time" id="hora" /></label><br />
-  <label>Tempo: <input type="number" id="tempo" /></label>
+  <h1>Safety Huddle Local</h1>
+  <input id="data" placeholder="Data" />
+  <input id="hora" placeholder="Hora" />
+  <input id="tempo" placeholder="Tempo" />
 
   <script>
-    // Config Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyBLmbarQp31Sqs0_VsYdE-OWdUlYO4WT7M",
       authDomain: "safety-leste.firebaseapp.com",
@@ -28,29 +26,18 @@
     const db = firebase.database();
     const ref = db.ref("safety-huddle");
 
-    // Função para salvar campo no Firebase
-    function salvarCampo(id, valor) {
-      ref.child(id).set(valor)
-        .then(() => console.log(`Salvo: ${id} = ${valor}`))
-        .catch(err => console.error('Erro salvando', err));
-    }
-
-    // Adiciona event listener a inputs para salvar ao digitar/mudar
     ["data", "hora", "tempo"].forEach(id => {
-      const input = document.getElementById(id);
-      input.addEventListener("input", () => {
-        salvarCampo(id, input.value);
+      const el = document.getElementById(id);
+      el.addEventListener("input", () => {
+        ref.child(id).set(el.value);
       });
     });
 
-    // Ao carregar a página, recuperar os dados
-    ref.on("value", snapshot => {
-      const data = snapshot.val();
+    ref.on("value", snap => {
+      const data = snap.val();
       if (!data) return;
       ["data", "hora", "tempo"].forEach(id => {
-        if (data[id] !== undefined) {
-          document.getElementById(id).value = data[id];
-        }
+        if (data[id]) document.getElementById(id).value = data[id];
       });
     });
   </script>
