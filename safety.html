@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Safety Huddle com Firebase Modular</title>
+  <title>Safety Huddle Modular - Salvar Automático</title>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
     import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
@@ -20,26 +20,29 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    const safetyRef = ref(db, 'safety-huddle');
+    const baseRef = ref(db, 'safety-huddle');
+
+    // IDs dos inputs para salvar/carregar
+    const ids = ['data', 'hora', 'tempo'];
 
     window.addEventListener('DOMContentLoaded', () => {
-      const dataInput = document.getElementById('data');
-      const horaInput = document.getElementById('hora');
-      const tempoInput = document.getElementById('tempo');
+      ids.forEach(id => {
+        const input = document.getElementById(id);
 
-      // Escuta alterações no Firebase e atualiza inputs
-      onValue(safetyRef, (snapshot) => {
-        const data = snapshot.val();
-        if (!data) return;
-        if (data.data && data.data !== dataInput.value) dataInput.value = data.data;
-        if (data.hora && data.hora !== horaInput.value) horaInput.value = data.hora;
-        if (data.tempo && data.tempo !== tempoInput.value) tempoInput.value = data.tempo;
+        // Ao digitar, salva no Firebase em 'safety-huddle/<id>'
+        input.addEventListener('input', () => {
+          set(ref(db, `safety-huddle/${id}`), input.value);
+        });
       });
 
-      // Salva automaticamente ao digitar
-      [dataInput, horaInput, tempoInput].forEach(input => {
-        input.addEventListener('input', () => {
-          set(ref(db, 'safety-huddle/' + input.id), input.value);
+      // Atualiza inputs com dados do Firebase, se existirem
+      onValue(baseRef, (snapshot) => {
+        const data = snapshot.val();
+        if (!data) return;
+        ids.forEach(id => {
+          if (data[id] !== undefined && data[id] !== document.getElementById(id).value) {
+            document.getElementById(id).value = data[id];
+          }
         });
       });
     });
@@ -47,8 +50,8 @@
 </head>
 <body>
   <h1>Safety Huddle Local</h1>
-  <label>Data: <input id="data" type="date" /></label><br />
-  <label>Hora: <input id="hora" type="time" /></label><br />
-  <label>Tempo Gasto (min): <input id="tempo" type="number" min="0" /></label>
+  <label>Data: <input type="date" id="data" /></label><br />
+  <label>Hora: <input type="time" id="hora" /></label><br />
+  <label>Tempo Gasto (min): <input type="number" id="tempo" min="0" /></label>
 </body>
 </html>
