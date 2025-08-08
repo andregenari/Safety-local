@@ -2,137 +2,139 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Safety Huddle Local</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    .container { max-width: 900px; margin: auto; }
-    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-    th, td { border: 1px solid #aaa; padding: 6px; text-align: center; }
-    th { background: #eee; }
-    .top label, .checkbox-group label, .info label { margin-right: 15px; }
-    .checkbox-group strong { display: block; margin-bottom: 5px; }
-    .rodape { margin-top: 20px; font-size: 0.9em; color: #555; }
-  </style>
-  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ccc; padding: 6px; }
+    th { background: #eee; }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Safety Huddle Local</h2>
-    <div class="top">
-      <label>Data: <input type="date" id="data" /></label>
-      <label>Tempo Gasto (min): <input type="number" id="tempo" min="0" /></label>
-    </div>
+  <h2>Safety Huddle Local</h2>
 
-    <div class="checkbox-group">
-      <strong>Equipe do Huddle:</strong><br>
-      <label><input type="checkbox" id="enfermeiros" /> Enfermeiros</label>
-      <label><input type="checkbox" id="fisioterapeuta" /> Fisioterapeuta</label>
-      <label><input type="checkbox" id="nutricionistas" /> Nutricionistas</label>
-      <label><input type="checkbox" id="tecnicos" /> Técnicos</label>
-      <label><input type="checkbox" id="auxiliares" /> Auxiliares</label>
-    </div>
+  <div>
+    <label>Data: <input type="date" id="data" /></label>
+    <label>Tempo Gasto: <input type="number" min="0" id="tempo" /> min</label>
+  </div>
 
-    <div class="info">
-      <label>Número de Leitos Ocupados: <input type="text" id="leitos_ocupados" /></label>
-      <label>Previsões de Alta: <input type="text" id="previsoes_alta" /></label>
-      <label>Leitos interditados: <input type="text" id="leitos_interditados" /></label>
-      <label>Contingência/leitos extras: <input type="text" id="contingencia" /></label>
-    </div>
+  <div>
+    <strong>Equipe do Huddle:</strong><br />
+    <label><input type="checkbox" id="equipe-enfermeiros" /> Enfermeiros</label>
+    <label><input type="checkbox" id="equipe-fisioterapeuta" /> Fisioterapeuta</label>
+    <label><input type="checkbox" id="equipe-nutricionistas" /> Nutricionistas</label>
+    <label><input type="checkbox" id="equipe-tecnicos" /> Técnicos</label>
+    <label><input type="checkbox" id="equipe-auxiliares" /> Auxiliares</label>
+  </div>
 
-    <table>
-      <thead>
-        <tr>
-          <th style="width: 30%">Pergunta</th>
-          <th>Não</th>
-          <th>Sim</th>
-          <th>Quais?</th>
-          <th>Devolutiva do caso para a equipe</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Perguntas 1 a 11 -->
-        <tr>
-          <td>1. Paciente com gerenciamento de risco (farol amarelo ou vermelho)?</td>
-          <td><input type="radio" name="q1" value="nao" /></td>
-          <td><input type="radio" name="q1" value="sim" /></td>
-          <td><input type="text" id="q1_quais" /></td>
-          <td><input type="text" id="q1_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>2. Paciente “Whatcher” (seriamente preocupado, críticos ou instáveis?)</td>
-          <td><input type="radio" name="q2" value="nao" /></td>
-          <td><input type="radio" name="q2" value="sim" /></td>
-          <td><input type="text" id="q2_quais" /></td>
-          <td><input type="text" id="q2_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>3. Pacientes com alto risco de queda, resistentes às orientações e não aderente às medidas preventivas ou sem acompanhante?</td>
-          <td><input type="radio" name="q3" value="nao" /></td>
-          <td><input type="radio" name="q3" value="sim" /></td>
-          <td><input type="text" id="q3_quais" /></td>
-          <td><input type="text" id="q3_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>4. Pacientes com alto risco LP? Resistente às medidas preventivas?</td>
-          <td><input type="radio" name="q4" value="nao" /></td>
-          <td><input type="radio" name="q4" value="sim" /></td>
-          <td><input type="text" id="q4_quais" /></td>
-          <td><input type="text" id="q4_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>5. Divergências entre o plano terapêutico?</td>
-          <td><input type="radio" name="q5" value="nao" /></td>
-          <td><input type="radio" name="q5" value="sim" /></td>
-          <td><input type="text" id="q5_quais" /></td>
-          <td><input type="text" id="q5_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>6. Terapias, procedimentos, protocolos ou dispositivos de alto risco ou não habituais?</td>
-          <td><input type="radio" name="q6" value="nao" /></td>
-          <td><input type="radio" name="q6" value="sim" /></td>
-          <td><input type="text" id="q6_quais" /></td>
-          <td><input type="text" id="q6_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>7. Houve a ocorrência de procedimentos invasivos não planejados ou situações de emergências?</td>
-          <td><input type="radio" name="q7" value="nao" /></td>
-          <td><input type="radio" name="q7" value="sim" /></td>
-          <td><input type="text" id="q7_quais" /></td>
-          <td><input type="text" id="q7_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>8. Eventos Adversos?</td>
-          <td><input type="radio" name="q8" value="nao" /></td>
-          <td><input type="radio" name="q8" value="sim" /></td>
-          <td><input type="text" id="q8_quais" /></td>
-          <td><input type="text" id="q8_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>9. Problemas com infraestrutura, Cerner, equipamentos, materiais ou medicamentos?</td>
-          <td><input type="radio" name="q9" value="nao" /></td>
-          <td><input type="radio" name="q9" value="sim" /></td>
-          <td><input type="text" id="q9_quais" /></td>
-          <td><input type="text" id="q9_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>10. Algum paciente elegível para a visita multiprofissional ou discussão do time diagnóstico?</td>
-          <td><input type="radio" name="q10" value="nao" /></td>
-          <td><input type="radio" name="q10" value="sim" /></td>
-          <td><input type="text" id="q10_quais" /></td>
-          <td><input type="text" id="q10_devolutiva" /></td>
-        </tr>
-        <tr>
-          <td>11. Outros:</td>
-          <td><input type="radio" name="q11" value="nao" /></td>
-          <td><input type="radio" name="q11" value="sim" /></td>
-          <td><input type="text" id="q11_quais" /></td>
-          <td><input type="text" id="q11_devolutiva" /></td>
-        </tr>
-      </tbody>
-    </table>
+  <div>
+    <label>Número de Leitos Ocupados: <input type="text" id="leitos-ocupados" /></label><br/>
+    <label>Previsões de Alta: <input type="text" id="previsoes-alta" /></label><br/>
+    <label>Leitos interditados: <input type="text" id="leitos-interditados" /></label><br/>
+    <label>Contingência/leitos extras: <input type="text" id="contingencia-leitos" /></label>
+  </div>
 
-    <p class="rodape">
-      *Fluxo de Escalonamento: Horário comercial comunicar sênior e Coordenador. Período noturno comunicar sênior e/ou supervisor administrativo. Nos finais de semana comunicar coordenador da área, não conseguindo
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 30%">Pergunta</th>
+        <th>Não</th>
+        <th>Sim</th>
+        <th>Quais?</th>
+        <th>Devolutiva do caso para a equipe</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Perguntas 1 a 11 -->
+      <tr>
+        <td>1. Paciente com gerenciamento de risco (farol amarelo ou vermelho)?</td>
+        <td><input type="radio" name="q1" value="nao" /></td>
+        <td><input type="radio" name="q1" value="sim" /></td>
+        <td><input type="text" id="q1-quais" /></td>
+        <td><input type="text" id="q1-devolutiva" /></td>
+      </tr>
+      <tr>
+        <td>2. Paciente “Whatcher” (seriamente preocupado, críticos ou instáveis?)</td>
+        <td><input type="radio" name="q2" value="nao" /></td>
+        <td><input type="radio" name="q2" value="sim" /></td>
+        <td><input type="text" id="q2-quais" /></td>
+        <td><input type="text" id="q2-devolutiva" /></td>
+      </tr>
+      <tr>
+        <td>3. Pacientes com alto risco de queda, resistentes às orientações e não aderente às medidas preventivas ou sem acompanhante?</td>
+        <td><input type="radio" name="q3" value="nao" /></td>
+        <td><input type="radio" name="q3" value="sim" /></td>
+        <td><input type="text" id="q3-quais" /></td>
+        <td><input type="text" id="q3-devolutiva" /></td>
+      </tr>
+      <tr>
+        <td>4. Pacientes com alto risco LP? Resistente às medidas preventivas?</td>
+        <td><input type="radio" name="q4" value="nao" /></td>
+        <td><input type="radio" name="q4" value="sim" /></td>
+        <td><input type="text" id="q4-quais" /></td>
+        <td><input type="text" id="q4-devolutiva" /></td>
+      </tr>
+      <tr>
+        <td>5. Divergências entre o plano terapêutico?</td>
+        <td><input type="radio" name="q5" value="nao" /></td>
+        <td><input type="radio" name="q5" value="sim" /></td>
+        <td><input type="text" id="q5-quais" /></td>
+        <td><input type="text" id="q5-devolutiva" /></td>
+      </tr>
+      <tr>
+        <td>6. Terapias, procedimentos, protocolos ou dispositivos de alto risco ou não habituais?</td>
+        <td><input type="radio" name="q6" value="nao" /></td>
+        <td><input type="radio" name="q6" value="sim" /></td>
+        <td><input type="text" id="q6-quais" /></td>
+        <td><input type="text" id="q6-devolutiva" /></td>
+      </tr>
+      <tr>
+        <td>7. Houve a ocorrência de procedimentos invasivos não planejados ou situações de emergências?</td>
+        <td><input type="radio" name="q7" value="nao" /></td>
+        <td><input type="radio" name="q7" value="sim" /></td>
+        <td><input type="text" id="q7-quais" /></td>
+        <td><input type="text" id="q7-devolutiva" /></td>
+      </tr>
+      <tr>
+        <td>8. Eventos Adversos?</td>
+        <td><input type="radio" name="q8" value="nao" /></td>
+        <td><input type="radio" name="q8" value="sim" /></td>
+        <td><input type="text" id="q8-quais" /></td>
+        <td><input type="text" id="q8-devolutiva" /></td>
+      </tr>
+      <tr>
+        <td>9. Problemas com infraestrutura, Cerner, equipamentos, materiais ou medicamentos?</td>
+        <td><input type="radio" name="q9" value="nao" /></td>
+        <td><input type="radio" name="q9" value="sim" /></td>
+        <td><input type="text" id="q9-quais" /></td>
+        <td><input type="text" id="q9-devolutiva" /></td>
+      </tr>
+      <tr>
+        <td>10. Algum paciente elegível para a visita multiprofissional ou discussão do time diagnóstico?</td>
+        <td><input type="radio" name="q10" value="nao" /></td>
+        <td><input type="radio" name="q10" value="sim" /></td>
+        <td><input type="text" id="q10-quais" /></td>
+        <td><input type="text" id="q10-devolutiva" /></td>
+      </tr>
+      <tr>
+        <td>11. Outros:</td>
+        <td><input type="radio" name="q11" value="nao" /></td>
+        <td><input type="radio" name="q11" value="sim" /></td>
+        <td><input type="text" id="q11-quais" /></td>
+        <td><input type="text" id="q11-devolutiva" /></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    *Fluxo de Escalonamento: Horário comercial comunicar sênior e Coordenador. Período noturno comunicar sênior e/ou supervisor administrativo. Nos finais de semana comunicar coordenador da área, não conseguindo contato acionar direto supervisor administrativo.
+  </p>
+
+  <script>
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyBLmbarQp31Sqs0_VsYdE-OWdUlYO4WT7M",
+      authDomain: "safety-leste.firebaseapp.com",
+      databaseURL: "https
