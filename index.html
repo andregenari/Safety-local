@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Safety Huddle</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+</head>
+<body>
+  <h1>Safety Huddle Local</h1>
+  <input id="data" placeholder="Data" />
+  <input id="hora" placeholder="Hora" />
+  <input id="tempo" placeholder="Tempo" />
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBLmbarQp31Sqs0_VsYdE-OWdUlYO4WT7M",
+      authDomain: "safety-leste.firebaseapp.com",
+      databaseURL: "https://safety-leste-default-rtdb.firebaseio.com",
+      projectId: "safety-leste",
+      storageBucket: "safety-leste.appspot.com",
+      messagingSenderId: "922824064168",
+      appId: "1:922824064168:web:d89c1c2fc24860b2cbd69d"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const ref = db.ref("safety-huddle");
+
+    ["data", "hora", "tempo"].forEach(id => {
+      const el = document.getElementById(id);
+      el.addEventListener("input", () => {
+        ref.child(id).set(el.value);
+      });
+    });
+
+    ref.on("value", snap => {
+      const data = snap.val();
+      if (!data) return;
+      ["data", "hora", "tempo"].forEach(id => {
+        if (data[id]) document.getElementById(id).value = data[id];
+      });
+    });
+  </script>
+</body>
+</html>
